@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 #? Is this nesting better or should I break out the classes?
 #? If I break out the classes, how do I only load the data once?
 
-MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion']
+MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion', 'decillion']
 
 class USAStats:
     def __init__(self, recent_date=''):
@@ -22,6 +22,10 @@ class USAStats:
                 'us_population': self._us_population[self._us_population['Census year'] <= int(date[:4])].iloc[-1]['Population'],
                 'world_population': self._world_population[self._world_population['year'] <= int(date[:4])].iloc[-1]['Population'],
                 'state_admissions': self._state_admissions.loc[self._state_admissions['Clean Date'] <= date]}
+    
+    @property
+    def recent_date(self):
+        return self._recent_date
 
 class CPI:
     def __init__(self, cpi):
@@ -29,6 +33,23 @@ class CPI:
 
     def __str__(self):
         return f'CPI for the period: {self._cpi:,.2f}'
+    
+    @property
+    def cpi(self):
+        return self._cpi
+    
+class CPIDelta:
+    def __init__(self, first_cpi, second_cpi):
+        self._cpi_delta = first_cpi / second_cpi
+    
+    def __str__(self):
+        return f'CPI Delta for the period: {self._cpi_delta:,.2f}'
+    
+    def __truediv__(self, amt):
+        return self._cpi_delta / amt
+    
+    def __mul__(self, amt):
+        return self._cpi_delta * amt
 
 class USPopulation:
     def __init__(self, us_population):
@@ -37,6 +58,17 @@ class USPopulation:
 
     def __str__(self):
         return f'US Population for the period: {self._us_population/(1000**self._us_pop_magnitude):,.1f} {MAGNITUDES[self._us_pop_magnitude]}'
+    
+    @property
+    def us_pop(self):
+        return self._us_population
+    
+class USPopulationDelta:
+    def __init__(self, first_us_pop, second_us_pop):
+        self._us_pop_delta = first_us_pop / second_us_pop
+
+    def __str__(self):
+        return f'US Population Delta for the period: {self._us_pop_delta:%}'
 
 class WorldPopulation:
     def __init__(self, world_population):
@@ -45,6 +77,17 @@ class WorldPopulation:
 
     def __str__(self):
         return f'World Population for the period: {self._world_population/(1000**self._world_pop_magnitude):,.1f} {MAGNITUDES[self._world_pop_magnitude]}'
+
+    @property
+    def world_pop(self):
+        return self._world_population
+
+class WorldPopulationDelta:
+    def __init__(self, first_world_pop, second_world_pop):
+        self._world_pop_delta = first_world_pop / second_world_pop
+
+    def __str__(self):
+        return f'World Population Delta for the period: {self._world_pop_delta:%}'
 
 class StateAdmissions:
     def __init__(self, states_admittied):
@@ -55,14 +98,15 @@ class StateAdmissions:
 
 
 class PeriodDelta:
-    def __init__(self, first_date, second_date, cpi_delta, first_us_pop, us_pop_change, first_world_pop, world_pop_change):
+    def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop):
         self._first_date = first_date
         self._second_date = second_date
-        self._cpi_delta = cpi_delta
-        self._first_us_pop = first_us_pop
-        self._us_pop_change = us_pop_change
-        self._first_world_pop = first_world_pop
-        self._world_pop_change = world_pop_change
+        self._cpi_delta = CPIDelta(first_cpi, second_cpi)
+        self._us_pop_delta = USPopulationDelta(first_us_pop, second_us_pop)
+        self._world_pop_change = WorldPopulationDelta(first_world_pop, second_world_pop)
+
+    def __str__(self):
+        return f'Period Delta from {self._first_date} to {self._second_date}:\n{str(self._cpi_delta)}\n{str(self._us_pop_delta)}\n{str(self._world_pop_change)}'
 
 class PeriodData:
     def __init__(self, date=''):
@@ -70,8 +114,10 @@ class PeriodData:
         self._stats = USAStats()
         if date:
             date_stats = self._stats.get_stats(date)
+            self._date = date
         else:
             date_stats = self._stats.get_stats()
+            self._date = self._stats.recent_date
         self._cpi = CPI(date_stats['cpi'])
         self._us_population = USPopulation(date_stats['us_population'])
         self._world_population = WorldPopulation(date_stats['world_population'])
@@ -84,7 +130,8 @@ class PeriodData:
         """
         Calculates the PeriodDelta for the object compared to the current date
         """
-        pass
+        second_stats = self._stats.get_stats()
+        return PeriodDelta(self.date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'])
 
     def __sub__(str, compare_date):
         """
@@ -108,7 +155,28 @@ class PeriodData:
         """
         pass
     
+    @property
+    def date(self):
+        return self._date
+    
+    @property
+    def cpi(self):
+        return self._cpi.cpi
+    
+    @property
+    def us_pop(self):
+        return self._us_population.us_pop
+    
+    @property
+    def world_pop(self):
+        return self._world_population.world_pop
+    
+    @property
+    def recent_date(self):
+        return self._stats.recent_date
 
 if __name__ == '__main__':
     period_data = PeriodData('1871-03-18')
     print(str(period_data))
+    print(str(PeriodData()))
+    print(str(-period_data))

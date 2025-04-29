@@ -1,8 +1,9 @@
-# US Stats Comparisons
+# US Stats Comparisons  
+
 Some code to quickly compare a set of stats for the US (and world) to another date (presumably recent)
 To Do:
-[v] - Generate Stats for a date
-[ ] - Generate comparison to most recent data
+[x] - Generate Stats for a date
+[x] - Generate comparison to most recent data (negation)
 [ ] - Subtraction logic
 [ ] - Addition logic
 [ ] - Graphing integrations
