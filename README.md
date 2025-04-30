@@ -5,7 +5,9 @@ To Do:
 [x] - Generate Stats for a date  
 [x] - Generate comparison to most recent data (negation)  
 [ ] - Subtraction logic  
+    [ ] - Test interval
 [ ] - Addition logic  
+    [ ] - Test logic
 [ ] - Graphing integrations  
 [ ] - Add attributions  
 [ ] - Clean up cleaning scripts and move them to here  

@@ -5,10 +5,13 @@ from datetime import datetime, timedelta
 #? Is this nesting better or should I break out the classes?
 #? If I break out the classes, how do I only load the data once?
 
-MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion', 'decillion']
+MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion',
+              'quadrillion', 'quintillion', 'sextillion', 'septillion',
+              'octillion', 'nonillion', 'decillion']
 
 class USAStats:
     def __init__(self, recent_date=''):
+        #? Can I change this into a payload with a property?
         self._cpi_data = pd.read_csv('combined_cpi.csv')
         self._state_admissions = pd.read_csv('state_admissions.csv')
         self._us_population = pd.read_csv('us_population_by_year.csv')
@@ -29,65 +32,126 @@ class USAStats:
 
 class CPI:
     def __init__(self, cpi):
-        self._cpi = cpi
+        self.cpi = cpi
 
     def __str__(self):
-        return f'CPI for the period: {self._cpi:,.2f}'
+        return f'CPI for the period: {self.cpi:,.2f}'
     
     @property
     def cpi(self):
         return self._cpi
     
+    @cpi.setter
+    def cpi(self, value):
+        self._cpi = value
+    
 class CPIDelta:
     def __init__(self, first_cpi, second_cpi):
-        self._cpi_delta = first_cpi / second_cpi
+        self.delta = (first_cpi, second_cpi)
     
     def __str__(self):
-        return f'CPI Delta for the period: {self._cpi_delta:,.2f}'
+        return f'CPI Delta for the period: {self.delta:,.2f}'
     
     def __truediv__(self, amt):
-        return self._cpi_delta / amt
+        return self.delta / amt
     
     def __mul__(self, amt):
-        return self._cpi_delta * amt
+        return self.delta * amt
+    
+    @property
+    def delta(self):
+        return self._cpi_delta
+    
+    @delta.setter
+    def delta(self, value):
+        self._cpi_delta = value[0] / value[1]
 
 class USPopulation:
     def __init__(self, us_population):
-        self._us_population = us_population
-        self._us_pop_magnitude = floor(log(us_population,1000))
+        self.us_pop = us_population
+        self._us_pop_magnitude = us_population
 
     def __str__(self):
-        return f'US Population for the period: {self._us_population/(1000**self._us_pop_magnitude):,.1f} {MAGNITUDES[self._us_pop_magnitude]}'
+        return f'US Population for the period: {self.pretty}'
     
     @property
     def us_pop(self):
         return self._us_population
     
+    @us_pop.setter
+    def us_pop(self, value):
+        self._us_population = value
+
+    @property
+    def magnitude(self):
+        return self._us_pop_magnitude
+    
+    @magnitude.setter
+    def magnitude(self, value):
+        self._us_pop_magnitude = floor(log(value,1000))
+
+    @property
+    def pretty(self):
+        return f'{self.us_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+    
 class USPopulationDelta:
     def __init__(self, first_us_pop, second_us_pop):
-        self._us_pop_delta = first_us_pop / second_us_pop
+        self.delta = (first_us_pop, second_us_pop)
 
     def __str__(self):
-        return f'US Population Delta for the period: {self._us_pop_delta:%}'
+        return f'US Population Delta for the period: {self.delta:%}'
+    
+    @property
+    def delta(self):
+        return self._us_pop_delta
+
+    @delta.setter
+    def delta(self, value):
+        self._us_pop_delta = value[0] / value[1]
 
 class WorldPopulation:
     def __init__(self, world_population):
-        self._world_population = world_population
-        self._world_pop_magnitude = floor(log(world_population,1000))
+        self.world_pop = world_population
+        self.magnitude = world_population
 
     def __str__(self):
-        return f'World Population for the period: {self._world_population/(1000**self._world_pop_magnitude):,.1f} {MAGNITUDES[self._world_pop_magnitude]}'
+        return f'World Population for the period: {self.pretty}'
 
     @property
     def world_pop(self):
         return self._world_population
+    
+    @world_pop.setter
+    def world_pop(self, value):
+        self._world_population = value
+    
+    @property
+    def magnitude(self):
+        return self._world_pop_magnitude
+    
+    @magnitude.setter
+    def magnitude(self, value):
+        self._world_pop_magnitude = floor(log(value,1000))
+
+    @property
+    def pretty(self):
+        return f'{self.world_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+
 
 class WorldPopulationDelta:
     def __init__(self, first_world_pop, second_world_pop):
-        self._world_pop_delta = first_world_pop / second_world_pop
+        self.delta = (first_world_pop, second_world_pop)
 
     def __str__(self):
-        return f'World Population Delta for the period: {self._world_pop_delta:%}'
+        return f'World Population Delta for the period: {self.delta:%}'
+    
+    @property
+    def delta(self):
+        return self._world_pop_delta
+    
+    @delta.setter
+    def delta(self, value):
+        self._world_pop_delta = (value[0] / value[1])
 
 class StateAdmissions:
     def __init__(self, states_admittied):
@@ -99,81 +163,160 @@ class StateAdmissions:
 
 class PeriodDelta:
     def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop):
-        self._first_date = first_date
-        self._second_date = second_date
+        self.first_date = first_date
+        self.second_date = second_date
         self._cpi_delta = CPIDelta(first_cpi, second_cpi)
         self._us_pop_delta = USPopulationDelta(first_us_pop, second_us_pop)
-        self._world_pop_change = WorldPopulationDelta(first_world_pop, second_world_pop)
+        self._world_pop_delta = WorldPopulationDelta(first_world_pop, second_world_pop)
 
     def __str__(self):
-        return f'Period Delta from {self._first_date} to {self._second_date}:\n{str(self._cpi_delta)}\n{str(self._us_pop_delta)}\n{str(self._world_pop_change)}'
+        return f'Period Delta from {self.first_date} to {self.second_date}:\n{str(self.cpi_delta)}\n{str(self.us_pop_delta)}\n{str(self.world_pop_delta)}'
+    
+    @property
+    def first_date(self):
+        return self._first_date
+    
+    @first_date.setter
+    def first_date(self, date):
+        self._first_date = date
+
+    @property
+    def second_date(self):
+        return self._second_date
+    
+    @second_date.setter
+    def second_date(self, date):
+        self._second_date = date
+
+    @property
+    def cpi_delta(self):
+        return self._cpi_delta
+    
+    @property
+    def us_pop_delta(self):
+        return self._us_pop_delta
+
+    @property
+    def world_pop_delta(self):
+        return self._world_pop_delta
 
 class PeriodData:
     def __init__(self, date=''):
-        #Figure out if there is a positional assignment from dictionary
-        self._stats = USAStats()
+        #TODO: Refactor dates from string to datetime
+        self.stats = USAStats()
         if date:
-            date_stats = self._stats.get_stats(date)
-            self._date = date
+            date_stats = self.stats.get_stats(date)
+            self.date = date
         else:
-            date_stats = self._stats.get_stats()
-            self._date = self._stats.recent_date
-        self._cpi = CPI(date_stats['cpi'])
-        self._us_population = USPopulation(date_stats['us_population'])
-        self._world_population = WorldPopulation(date_stats['world_population'])
-        self._state_admissions = StateAdmissions(date_stats['state_admissions'])
+            date_stats = self.stats.get_stats()
+            self.date = self.stats.recent_date
+        self.cpi = date_stats['cpi']
+        self.us_pop = date_stats['us_population']
+        self.world_pop = date_stats['world_population']
+        self.state_admissions = date_stats['state_admissions']
     
     def __str__(self):
-        return str(self._cpi) + '\n' + str(self._us_population) + '\n' + str(self._world_population)
+        return str(self.cpi) + '\n' + str(self.us_pop) + '\n' + str(self.world_pop)
 
     def __neg__(self):
         """
         Calculates the PeriodDelta for the object compared to the current date
         """
-        second_stats = self._stats.get_stats()
+        second_stats = self.stats.get_stats()
         return PeriodDelta(self.date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'])
 
-    def __sub__(str, compare_date):
+    def __sub__(self, compare_date):
         """
         If the object is another date or PeriodData compares the statistics
         for a given date or other PeriodData instance and the date stored
         in the left side PeriodData. Returns a PeriodDelta.
         If the object is a time delta it adjusts the object the new data
         """
-        if isinstance(compare_date, str):
-            return 
-            # get and compare all of the stats for that date
-        elif isinstance(compare_date, PeriodData):
-            return
+        if isinstance(compare_date, PeriodData):
+            return PeriodDelta(self.date, compare_date.date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop)
             #get and compare 
         elif isinstance(compare_date, timedelta):
-            return
+            #this subtracts X interval from the object and sets the new properties 
+            self.date = self.date - timedelta(compare_date)
+            new_stats = self.stats.get_stats(self.date)
+            self.cpi = new_stats['CPI']
+            self.us_pop = new_stats['us_population']
+            self.world_pop = new_stats['world_population']
+            self.state_admissions = new_stats['state_admissions']
+        elif isinstance(compare_date, str):
+            if len(compare_date.strip()) == 10 and compare_date[4] in ('-', '/'):
+                compare_stats = self.stats.get_stats(compare_date)
+                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['CPI'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'])
+            else:
+                self.date = self.date - timedelta(compare_date)
+                new_stats = self.stats.get_stats(self.date)
+                self.cpi = new_stats['CPI']
+                self.us_pop = new_stats['us_population']
+                self.world_pop = new_stats['world_population']
+                self.state_admissions = new_stats['state_admissions']
 
-    def __add__(str, add_interval):
+    def __add__(self, add_interval):
         """
         Advances the statistics by a given interval
         """
-        pass
+        self.date = self.date + timedelta(add_interval)
+        new_stats = self.stats.get_stats(self._date)
+        self.cpi = new_stats['CPI']
+        self.us_pop = new_stats['us_population']
+        self.world_pop = new_stats['world_population']
+        self.state_admissions = new_stats['state_admissions']
     
+    @property
+    def stats(self):
+        return self._stats
+    
+    @stats.setter
+    def stats(self, stats):
+        self._stats = stats
+
     @property
     def date(self):
         return self._date
+    
+    @date.setter
+    def date(self, new_date):
+        self._date = new_date
     
     @property
     def cpi(self):
         return self._cpi.cpi
     
+    @cpi.setter
+    def cpi(self, new_cpi):
+        self._cpi = CPI(new_cpi)
+    
     @property
     def us_pop(self):
         return self._us_population.us_pop
+    
+    @us_pop.setter
+    def us_pop(self, new_us_pop):
+        self._us_population = USPopulation(new_us_pop)
     
     @property
     def world_pop(self):
         return self._world_population.world_pop
     
+    @world_pop.setter
+    def world_pop(self, new_world_pop):
+        self._world_population = WorldPopulation(new_world_pop)
+    
     @property
     def recent_date(self):
         return self._stats.recent_date
+    
+    @property
+    def state_admissions(self):
+        return self._state_admissions
+
+    @state_admissions.setter
+    def state_admissions(self, new_state_admissions):
+        self._state_admissions = new_state_admissions
 
 if __name__ == '__main__':
     period_data = PeriodData('1871-03-18')
