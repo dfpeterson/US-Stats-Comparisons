@@ -4,11 +4,13 @@ Some code to quickly compare a set of stats for the US (and world) to another da
 To Do:  
 [x] - Generate Stats for a date  
 [x] - Generate comparison to most recent data (negation)  
-[ ] - Subtraction logic  
-    [ ] - Test interval
-[ ] - Addition logic  
-    [ ] - Test logic
-[ ] - See if I can convert the dates to datetime objects and make a getter with YYYY-MM-DD (is there a dateimte limit?)
+[x] - Subtraction logic  
+    [x] - Test interval
+[x] - Addition logic  
+    [x] - Test logic
+[x] - See if I can convert the dates to datetime objects and make a getter with YYYY-MM-DD (is there a dateimte limit?)  
 [ ] - Graphing integrations  
 [ ] - Add attributions  
+[ ] - Documentation  
 [ ] - Clean up cleaning scripts and move them to here  
+[ ] - Try polars  

@@ -1,11 +1,24 @@
 import pandas as pd
 from math import ceil, floor, log
-from datetime import datetime, timedelta
+from datetime import date as datef
+from dateutil.relativedelta import relativedelta
+
 
 MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion',
               'quadrillion', 'quintillion', 'sextillion', 'septillion',
               'octillion', 'nonillion', 'decillion']
 
+def parse_interval(interval):
+    intervals = {}
+    for num, period in zip(interval.split(' '),interval.split(' ')[1:]):
+        if period.startswith('day'):
+            intervals['days'] = int(num)
+        elif period.startswith('month'):
+            intervals['months'] = int(num)
+        elif period.startswith('year'):
+            intervals['years'] = int(num)
+    return relativedelta(**intervals)
+    
 class USAStats:
     def __init__(self, recent_date=''):
         #? Can I change this into a payload with a property?
@@ -15,10 +28,11 @@ class USAStats:
         self._us_population = pd.read_csv('us_population_by_year.csv')
         self._world_population = pd.read_csv('world_population.csv')
         #TODO: Flags, Maps and Presidents
-        self.recent_date = recent_date if recent_date else f'{datetime.now():%Y-%m-%d}'
+        self.recent_date = recent_date if recent_date else datef.today()
 
     def get_stats(self, date=''):
-        date = date if date else self._recent_date
+        date = date if date else self.recent_datestr
+        date = date.isoformat() if isinstance(date, datef) else date
         return {'cpi': self._cpi_data.loc[self._cpi_data['Year and Month'] <= date].iloc[-1]['Adj CPI'],
                 'us_population': self._us_population[self._us_population['Census year'] <= int(date[:4])].iloc[-1]['Population'],
                 'world_population': self._world_population[self._world_population['year'] <= int(date[:4])].iloc[-1]['Population'],
@@ -28,14 +42,28 @@ class USAStats:
     def recent_date(self):
         return self._recent_date
     
+    @property
+    def recent_datestr(self):
+        return f'{self._recent_date:%Y-%m-%d}'
+    
     @recent_date.setter
     def recent_date(self, value):
+        if isinstance(value, str):
+            value = datef.fromisoformat(value)
         self._recent_date = value
 
+    @property
+    def year(self):
+        return self._recent_date.year
+
+    @property
+    def yearstr(self):
+        return f'{self._recent_date.year}'
+    
 _data_sets = {'cpi_data': 'combined_cpi.csv',
-        'state_admissions': 'state_admissions.csv',
-        'us_population': 'us_population_by_year.csv',
-        'world_population': 'world_population.csv'}
+              'state_admissions': 'state_admissions.csv',
+              'us_population': 'us_population_by_year.csv',
+              'world_population': 'world_population.csv'}
 
 #? Is this going to work outside of this file?
 _usa_stats = USAStats()
@@ -168,7 +196,6 @@ class StateAdmissions:
     def __str__(self):
         return f'State Admissions for the period: {self._states_admitted}'
 
-
 class PeriodDelta:
     def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop):
         self.first_date = first_date
@@ -211,7 +238,6 @@ class PeriodDelta:
 class PeriodData:
     def __init__(self, date=''):
         #TODO: Refactor dates from string to datetime
-        _usa_stats = USAStats()
         if date:
             date_stats = _usa_stats.get_stats(date)
             self.date = date
@@ -224,7 +250,7 @@ class PeriodData:
         self.state_admissions = date_stats['state_admissions']
     
     def __str__(self):
-        return f'{str(self.cpi)}\n{str(self.us_pop)}\n{str(self.world_pop)}'
+        return f'Stats for {self.datestr}\n{str(self.cpi)}\n{str(self.us_pop)}\n{str(self.world_pop)}'
 
     def __neg__(self):
         """
@@ -242,38 +268,23 @@ class PeriodData:
         """
         if isinstance(compare_date, PeriodData):
             return PeriodDelta(self.date, compare_date.date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop)
-            #get and compare 
-        elif isinstance(compare_date, timedelta):
-            #this subtracts X interval from the object and sets the new properties 
-            self.date = self.date - timedelta(compare_date)
-            new_stats = _usa_stats.get_stats(self.date)
-            self.cpi = new_stats['CPI']
-            self.us_pop = new_stats['us_population']
-            self.world_pop = new_stats['world_population']
-            self.state_admissions = new_stats['state_admissions']
+        elif isinstance(compare_date, relativedelta):
+            new_date =self.date - compare_date
+            return PeriodData(new_date)
         elif isinstance(compare_date, str):
             if len(compare_date.strip()) == 10 and compare_date[4] in ('-', '/'):
                 compare_stats = _usa_stats.get_stats(compare_date)
-                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['CPI'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'])
+                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'])
             else:
-                self.date = self.date - timedelta(compare_date)
-                new_stats = _usa_stats.get_stats(self.date)
-                self.cpi = new_stats['CPI']
-                self.us_pop = new_stats['us_population']
-                self.world_pop = new_stats['world_population']
-                self.state_admissions = new_stats['state_admissions']
+                new_date = self.date - parse_interval(compare_date)
+                return PeriodData(new_date)
 
     def __add__(self, add_interval):
         """
         Advances the statistics by a given interval
         """
-        self.date = self.date + timedelta(add_interval)
-        new_stats = _usa_stats.get_stats(self._date)
-        self.cpi = new_stats['CPI']
-        self.us_pop = new_stats['us_population']
-        self.world_pop = new_stats['world_population']
-        self.state_admissions = new_stats['state_admissions']
-    
+        new_date = self.date + parse_interval(add_interval)
+        return PeriodData(new_date)
     @property
     def stats(self):
         return self._stats
@@ -285,11 +296,19 @@ class PeriodData:
     @property
     def date(self):
         return self._date
-    
+
+    @property
+    def datestr(self):
+        return f'{self._date::%Y-%m-%d}'
+
+
     @date.setter
     def date(self, new_date):
-        self._date = new_date
-    
+        if isinstance(new_date, str):
+            self._date = datef.fromisoformat(new_date)
+        else:
+            self._date = new_date
+
     @property
     def cpi(self):
         return self._cpi
@@ -331,3 +350,9 @@ if __name__ == '__main__':
     print(str(period_data))
     print(str(PeriodData()))
     print(str(-period_data))
+    print(parse_interval('1 day, 2 months and 4 years'))
+    print(period_data - '1 day, 2 months and 4 years')
+    print(str(period_data.date))
+    print(parse_interval('9 years, 101 days and 3 months'))
+    print(period_data + '9 years, 101 days and 3 months')
+    print(str(period_data.date))
