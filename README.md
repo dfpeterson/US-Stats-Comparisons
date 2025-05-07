@@ -9,8 +9,17 @@ To Do:
 [x] - Addition logic  
     [x] - Test logic
 [x] - See if I can convert the dates to datetime objects and make a getter with YYYY-MM-DD (is there a dateimte limit?)  
+[ ] - US and World GDP
+    [ ] - Add to deltas
+[ ] - US Flags  
+[ ] - US Presidents  
+[ ] - Historical events
+    [ ] - Constitutional Amendments  
+    [ ] - Major inventions
+    [ ] - Wars
 [ ] - Graphing integrations  
 [ ] - Add attributions  
 [ ] - Documentation  
+[ ] - Lint code
 [ ] - Clean up cleaning scripts and move them to here  
 [ ] - Try polars  
