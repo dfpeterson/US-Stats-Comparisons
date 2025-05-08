@@ -238,7 +238,7 @@ class USGDP:
         self.per_capita = us_gdp[0]
 
     def __str__(self):
-        return f'US GDP for the period: {self.us_gdp:,.2f}'
+        return f'US GDP for the period: {self.pretty}\nPer Capita: {self.pretty_per_capita}'
 
     @property
     def us_gdp(self):
@@ -256,27 +256,49 @@ class USGDP:
     def per_capita(self, value):
         self._per_capita = value
 
+    @property
+    def magnitude(self):
+        return floor(log(self._us_gdp,1000))
+    
+    @property
+    def magnitude_per_capita(self):
+        return floor(log(self._per_capita,1000))
+
+    @property
+    def pretty(self):
+        return f'{self.us_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+    
+    @property
+    def pretty_per_capita(self):
+        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita]}'
+
 class USGDPDelta:
     def __init__(self, first_us_gdp, second_us_gdp):
         self.delta = (first_us_gdp, second_us_gdp)
 
     def __str__(self):
-        return f'US GDP Delta for the period: {self.delta:,.2f}'
+        return f'US GDP Delta for the period: {self.delta:.1%}\nPer Capita: {self.delta_per_capita:.1%}'
     
     @property
     def delta(self):
         return self._us_gdp_delta
     
+    @property
+    def delta_per_capita(self):
+        return self._us_gdp_delta_per_capita
+
     @delta.setter
     def delta(self, value):
-        self._us_gdp_delta = value[0] / value[1]
+        self._us_gdp_delta = value[0].us_gdp / value[1][1]
+        self._us_gdp_delta_per_capita = value[0].per_capita / value[1][0]
 
 class WorldGDP:
     def __init__(self, world_gdp):
-        self.world_gdp = world_gdp
-        
+        self.world_gdp = world_gdp[1]
+        self.per_capita = world_gdp[0]
+
     def __str__(self):
-        return f'World GDP for the period: {self.world_gdp:,.2f}'
+        return f'World GDP for the period: {self.pretty}\nPer Capita: {self.pretty_per_capita}'
     
     @property
     def world_gdp(self):
@@ -284,7 +306,7 @@ class WorldGDP:
     
     @world_gdp.setter
     def world_gdp(self, value):
-        self._world_gdp = value[1]
+        self._world_gdp = value
 
     @property
     def per_capita(self):
@@ -292,33 +314,60 @@ class WorldGDP:
     
     @per_capita.setter
     def per_capita(self, value):
-        self._per_capita = value[0]
+        self._per_capita = value
+
+    @property
+    def magnitude(self):
+        return floor(log(self._world_gdp,1000))
+    
+    @property
+    def magnitude_per_capita(self):
+        return floor(log(self._per_capita,1000))
+
+    @property
+    def pretty(self):
+        return f'{self.world_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+    
+    @property
+    def pretty_per_capita(self):
+        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita]}'
+    
 
 class WorldGDPDelta:
     def __init__(self, first_world_gdp, second_world_gdp):
         self.delta = (first_world_gdp, second_world_gdp)
 
     def __str__(self):
-        return f'World GDP Delta for the period: {self.delta:,.2f}'
+        return f'World GDP Delta for the period: {self.delta:,.1%}\nPer Capita: {self.delta_per_capita:,.1%}'
     
     @property
     def delta(self):
         return self._world_gdp_delta
+
+    @property
+    def delta_per_capita(self):
+        return self._world_gdp_delta_per_capita
     
     @delta.setter
     def delta(self, value):
-        self._world_gdp_delta = value[0] / value[1]
+        self._world_gdp_delta = value[0].world_gdp / value[1][1]
+        self._world_gdp_delta_per_capita = value[0].per_capita / value[1][0]
+
+
+
 
 class PeriodDelta:
-    def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop):
+    def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop, first_us_gdp, second_us_gdp, first_world_gdp, second_world_gdp):
         self.first_date = first_date
         self.second_date = second_date
         self._cpi_delta = CPIDelta(first_cpi, second_cpi)
         self._us_pop_delta = USPopulationDelta(first_us_pop, second_us_pop)
         self._world_pop_delta = WorldPopulationDelta(first_world_pop, second_world_pop)
+        self._us_gdp_delta = USGDPDelta(first_us_gdp, second_us_gdp)
+        self._world_gdp_delta = WorldGDPDelta(first_world_gdp, second_world_gdp)
 
     def __str__(self):
-        return f'Period Delta from {self.first_date} to {self.second_date}:\n{str(self.cpi_delta)}\n{str(self.us_pop_delta)}\n{str(self.world_pop_delta)}'
+        return f'Period Delta from {self.first_date} to {self.second_date}:\n{str(self.cpi_delta)}\n{str(self.us_pop_delta)}\n{str(self.world_pop_delta)}\n{str(self.us_gdp_delta)}\n{str(self.world_gdp_delta)}'
     
     @property
     def first_date(self):
@@ -357,6 +406,21 @@ class PeriodDelta:
     def world_pop_vis(self):
         vis = (round(self.us_pop_delta.delta * 100) * ['👨‍👩‍👧‍👧']) + (round(((1-self.us_pop_delta.delta) * 100)) * ['⬜'])
         return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
+    
+    @property
+    def us_gdp_delta(self):
+        return self._us_gdp_delta
+    
+    @property
+    def world_gdp_delta(self):
+        return self._world_gdp_delta
+    
+    @property
+    def us_gdp_vis(self):
+        vis = (round(self.us_gdp_delta.delta * 100) * ['']) + (round(((1-self.us_gdp_delta.delta) * 100)) * ['⬜'])
+        return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
+    
+
 
 class PeriodData:
     def __init__(self, date=''):
@@ -382,7 +446,7 @@ class PeriodData:
         Calculates the PeriodDelta for the object compared to the current date
         """
         second_stats = _usa_stats.get_stats()
-        return PeriodDelta(self.date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'])
+        return PeriodDelta(self.date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'], self.us_gdp, second_stats['us_gdp'], self.world_gdp, second_stats['world_gdp'])
 
     def __sub__(self, compare_date):
         """
@@ -392,14 +456,14 @@ class PeriodData:
         If the object is a time delta it adjusts the object the new data
         """
         if isinstance(compare_date, PeriodData):
-            return PeriodDelta(self.date, compare_date.date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop)
+            return PeriodDelta(self.date, compare_date.date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop, self.us_gdp, compare_date.us_gdp, self.world_gdp, compare_date.world_gdp)
         elif isinstance(compare_date, relativedelta):
             new_date =self.date - compare_date
             return PeriodData(new_date)
         elif isinstance(compare_date, str):
             if len(compare_date.strip()) == 10 and compare_date[4] in ('-', '/'):
                 compare_stats = _usa_stats.get_stats(compare_date)
-                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'])
+                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'], self.us_gdp, compare_stats['us_gdp'], self.world_gdp, compare_stats['world_gdp'])
             else:
                 new_date = self.date - parse_interval(compare_date)
                 return PeriodData(new_date)
