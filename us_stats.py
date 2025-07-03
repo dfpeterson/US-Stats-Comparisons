@@ -3,8 +3,6 @@ from math import ceil, floor, log
 from datetime import date as datef
 from dateutil.relativedelta import relativedelta
 
-PEOPLE_BAR = [''.join([[ '🧍🏿', '🧍🏻', '🧍🏽', '🧍', '🧍🏾', '🧍🏼'][person%6] for person in range(k * 25, (k + 1) * 25)]) for k in range(4)]
-
 MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion',
               'quadrillion', 'quintillion', 'sextillion', 'septillion',
               'octillion', 'nonillion', 'decillion']
@@ -22,9 +20,8 @@ def parse_interval(interval):
     
 class USAStats:
     def __init__(self, payload, recent_date=''):
-        #? Can I change this into a payload with a property?
-        self.payload = payload
         #TODO: Flags, Maps and Presidents
+        self.payload = payload
         self.recent_date = recent_date if recent_date else datef.today()
 
     def get_stats(self, date=''):
@@ -34,8 +31,10 @@ class USAStats:
                 'us_population': self.us_population[self.us_population['Census year'] <= int(date[:4])].iloc[-1]['Population'],
                 'world_population': self.world_population[self.world_population['year'] <= int(date[:4])].iloc[-1]['Population'],
                 'state_admissions': self.state_admissions.loc[self.state_admissions['Clean Date'] <= date],
+                #Tuples because it passes both per capita and total
                 'us_gdp': tuple(self.us_gdp.loc[self.us_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
-                'world_gdp': tuple(self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1])
+                'world_gdp': tuple(self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
+                'presidents': tuple(self.presidents.loc[self.presidents['inauguration date'] <= date].iloc[-1])
                 }
     
     @property
@@ -66,7 +65,7 @@ class USAStats:
 
     @payload.setter
     def payload(self, value):
-        self._payload = {name: pd.read_csv(file) for name, file in value.items()}
+        self._payload = {name: pd.read_csv(f'data/{file}') for name, file in value.items()}
     
     @property
     def cpi_data(self):
@@ -91,13 +90,19 @@ class USAStats:
     @property
     def world_gdp(self):
         return self.payload['world_gdp']
+    
+    @property
+    def presidents(self):
+        return self.payload['presidents']
 
 _data_sets = {'cpi_data': 'combined_cpi.csv',
               'state_admissions': 'state_admissions.csv',
               'us_population': 'us_population_by_year.csv',
               'world_population': 'world_population.csv',
               'us_gdp': 'us_gdp.csv',
-              'world_gdp': 'world_gdp.csv'}
+              'world_gdp': 'world_gdp.csv',
+              'presidents': 'presidents.csv'
+              }
 
 _usa_stats = USAStats(_data_sets)
 
@@ -143,6 +148,20 @@ class CPIDelta:
     def delta(self, value):
         self._cpi_delta = value[0] / value[1]
 
+    @property
+    def delta_pcts(self):
+        return {'base year': self._cpi_delta, 'until current year': 1-self._cpi_delta}
+
+    @property
+    def waffle(self):
+        return {
+            'rows':5,
+            'columns':20,
+            'values':self.delta_pcts,
+            'vertical':True,
+            'figsize':(5, 3)
+            }
+
 class USPopulation:
     def __init__(self, us_population):
         self.us_pop = us_population
@@ -182,6 +201,23 @@ class USPopulationDelta:
     @delta.setter
     def delta(self, value):
         self._us_pop_delta = value[0] / value[1]
+    
+    @property
+    def delta_pcts(self):
+        #TODO find better key names
+        return {'base year': int(round(self.delta * 100)), 'until current year': int(round((1 - self.delta) * 100))}
+
+    @property
+    def waffle(self):
+        #adjust size of icons or make flexible
+        return {
+            'rows':5,
+            'columns':20,
+            'values':self.delta_pcts,
+            'colors':['#424242', '#ababab'],
+            'icons':['person','person'],
+            'figsize':(5, 3)
+        }
 
 class WorldPopulation:
     def __init__(self, world_population):
@@ -209,7 +245,6 @@ class WorldPopulation:
     def pretty(self):
         return f'{self.world_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
 
-
 class WorldPopulationDelta:
     def __init__(self, first_world_pop, second_world_pop):
         self.delta = (first_world_pop, second_world_pop)
@@ -224,6 +259,22 @@ class WorldPopulationDelta:
     @delta.setter
     def delta(self, value):
         self._world_pop_delta = (value[0] / value[1])
+
+    @property
+    def delta_pcts(self):
+        #TODO find better key names
+        return {'base year': int(round(self.delta * 100)), 'until current year': int(round((1 - self.delta) * 100))}
+
+    @property
+    def waffle(self):
+        return {
+            'rows':5,
+            'columns':20,
+            'values':self.delta_pcts,
+            'colors':['#424242', '#ababab'],
+            'icons':['person'],
+            'figsize':(5, 3)
+        }
 
 class StateAdmissions:
     def __init__(self, states_admittied):
@@ -292,6 +343,23 @@ class USGDPDelta:
         self._us_gdp_delta = value[0].us_gdp / value[1][1]
         self._us_gdp_delta_per_capita = value[0].per_capita / value[1][0]
 
+    @property
+    def delta_pcts(self):
+        #TODO find better key names
+        return {'base year': int(round(self.delta * 100)), 'until current year': int(round((1 - self.delta) * 100))}
+
+    @property
+    def waffle(self):
+        return {
+            'rows':4,
+            'columns':25,
+            'starting_location':'SE',
+            'values':self.delta_pcts,
+            'colors':["#f5f54c", "#664f0e"],
+            'icons':['$'],
+            'figsize':(5, 3)
+        }
+
 class WorldGDP:
     def __init__(self, world_gdp):
         self.world_gdp = world_gdp[1]
@@ -352,9 +420,66 @@ class WorldGDPDelta:
     def delta(self, value):
         self._world_gdp_delta = value[0].world_gdp / value[1][1]
         self._world_gdp_delta_per_capita = value[0].per_capita / value[1][0]
+    @property
+    def delta_pcts(self):
+        #TODO find better key names
+        return {'base year': int(round(self.delta * 100)), 'until current year': int(round((1 - self.delta) * 100))}
 
+    @property
+    def waffle(self):
+        return {
+            'rows':4,
+            'columns':25,
+            'starting_location':'SE',
+            'values':self.delta_pcts,
+            'colors':["#f5f54c", "#664f0e"],
+            'icons':['dollar','dollar'],
+            'font_size':16,
+            'figsize':(5, 3)
+        }
 
+class President:
+    def __init__(self, president):
+        self.name = president[2]
+        self.image = president[3]
+        self.number = president[0]
+        self.inauguration = president[1]
 
+    def __str__(self):
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(self.number, 'th')
+        return f'{self.name} {self.number}{suffix} President'
+    
+    @property
+    def image(self):
+        return self._image
+    
+    @image.setter
+    def image(self, value):
+        self._image = value
+
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def number(self):
+        return self._number
+    
+    @number.setter
+    def number(self, value):
+        self._number = value
+    
+    @property
+    def inauguration(self):
+        return self._inauguration
+    
+    @inauguration.setter
+    def inauguration(self, value):
+        self._inauguration = value
 
 class PeriodDelta:
     def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop, first_us_gdp, second_us_gdp, first_world_gdp, second_world_gdp):
@@ -437,6 +562,7 @@ class PeriodData:
         self.state_admissions = date_stats['state_admissions']
         self.us_gdp = date_stats['us_gdp']
         self.world_gdp = date_stats['world_gdp']
+        self.president = date_stats['presidents']
     
     def __str__(self):
         return f'Stats for {self.datestr}\n{str(self.cpi)}\n{str(self.us_pop)}\n{str(self.world_pop)}\n{str(self.us_gdp)}\n{str(self.world_gdp)}'
@@ -549,6 +675,14 @@ class PeriodData:
     @world_gdp.setter
     def world_gdp(self, new_world_gdp):
         self._world_gdp = WorldGDP(new_world_gdp)
+
+    @property
+    def president(self):
+        return self._president
+    
+    @president.setter
+    def president(self, president):
+        self._president = President(president)
 
 if __name__ == '__main__':
     period_data = PeriodData('1871-03-18')

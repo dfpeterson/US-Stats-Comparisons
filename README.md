@@ -13,6 +13,9 @@ To Do:
     [x] - Add to deltas  
 [ ] - US Flags (add to state admissions)  
 [ ] - US Presidents  
+    [ ] - Resize portraits
+    [ ] - Generate inaugurations csv
+    [ ] - Add module to us_stats
 [ ] - Historical events  
     [ ] - Constitutional Amendments  
     [ ] - Major inventions  
@@ -23,4 +26,6 @@ To Do:
 [ ] - Documentation  
 [ ] - Lint code  
 [ ] - Clean up cleaning scripts and move them to here  
+    [ ] - Pull from web sources  
+    [ ] - Backfill from 1600  
 [ ] - Try polars  
