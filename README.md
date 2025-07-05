@@ -11,11 +11,16 @@ To Do:
 [x] - See if I can convert the dates to datetime objects and make a getter with YYYY-MM-DD (is there a dateimte limit?)  
 [x] - US and World GDP  
     [x] - Add to deltas  
-[ ] - US Flags (add to state admissions)  
-[ ] - US Presidents  
-    [ ] - Resize portraits
-    [ ] - Generate inaugurations csv
-    [ ] - Add module to us_stats
+[ ] - US Flags  
+    [x] - Add images  
+    [x] - Add to state admissions as a 1st pass  
+    [ ] - Create a flags file (since flags are synched to 4th of July)  
+    [ ] - Create a flag class  
+    [ ] - See if there is a realistic image alternative  
+[x] - US Presidents  
+    [x] - Resize portraits
+    [x] - Generate inaugurations csv
+    [x] - Add class to us_stats
 [ ] - Historical events  
     [ ] - Constitutional Amendments  
     [ ] - Major inventions  

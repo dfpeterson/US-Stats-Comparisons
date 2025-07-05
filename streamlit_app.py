@@ -61,22 +61,22 @@ with col1:
 # Comparison
     st.write(f"{comp.us_pop_delta}")
     st.markdown('<div class="section-header">Constitutional Amendments</div>', unsafe_allow_html=True)
-    amendments = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
-                  "XI", "XII", "XIII", "XIV", "XV"]
-    ratified_count = 12  # Example cutoff
-    st.markdown(" ".join(f"**{a}**" if i < ratified_count else f"*{a}*" for i, a in enumerate(amendments)))
+    amendments = ['I-X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', '~XVIII~' if engine.amendments >= 21 else 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI', 'XXVII']
+    st.markdown(" ".join(f'**{a}**' if i + 10 <= engine.amendments else f'*{a}*' for i, a in enumerate(amendments)))
 
 # Column 2: Sidebar Info
 with col2:
     st.markdown('<div class="section-header">Leader of the Nation</div>', unsafe_allow_html=True)
-    st.image(f"images/presidents/{engine.president.image}", caption=f"{engine.president.name}")
-    st.markdown(f"**{engine.president}**")
+    st.image(f"images/presidents/{engine.president.image}", caption=f"{engine.president}")
+    st.markdown(f"**{engine.president.name}**")
 
     st.markdown('<div class="section-header">National Flag</div>', unsafe_allow_html=True)
-    st.image(f"images/flags/{engine.state_admissions.num_states}stars.png", caption=f"{engine.state_admissions}-Star Flag")
-    st.markdown(f"{engine.state_admissions}")
+    st.image(f"images/flags/{engine.flag.image}", caption=f"{engine.flag}")
+    st.markdown(f"{engine.flag}")
 
     st.markdown(f'<div class="section-header">Map of the US on {engine.date}</div>', unsafe_allow_html=True)
+    #st.image(f"images/maps/{engine.map}", use_column_width=True)
+    st.markdown(f"{engine.state_admissions}")
 
 # Main stats
 

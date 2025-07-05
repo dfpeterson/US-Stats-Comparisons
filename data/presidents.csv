@@ -1,48 +1,48 @@
 number,inauguration date,name,file
-1,1789-30-04,George Washington,01_george_washington.jpg
-2,1797-04-03,John Adams,02_john_adams.jpg
-3,1801-04-03,Thomas Jefferson,03_thomas_jefferson.jpg
-4,1809-04-03,James Madison,04_james_madison.jpg
-5,1817-04-03,James Monroe,05_james_monroe.jpg
-6,1825-04-03,John Quincy Adams,06_john_quincy_adams.jpg
-7,1829-04-03,Andrew Jackson,07_andrew_jackson.jpg
-8,1837-04-03,Martin Van Buren,08_martin_van_buren.jpg
-9,1841-04-03,William Henry Harrison,09_william_henry_harrison.jpg
+1,1789-04-30,George Washington,01_george_washington.jpg
+2,1797-03-04,John Adams,02_john_adams.jpg
+3,1801-03-04,Thomas Jefferson,03_thomas_jefferson.jpg
+4,1809-03-04,James Madison,04_james_madison.jpg
+5,1817-03-04,James Monroe,05_james_monroe.jpg
+6,1825-03-04,John Quincy Adams,06_john_quincy_adams.jpg
+7,1829-03-04,Andrew Jackson,07_andrew_jackson.jpg
+8,1837-03-04,Martin Van Buren,08_martin_van_buren.jpg
+9,1841-03-04,William Henry Harrison,09_william_henry_harrison.jpg
 10,1841-04-04,John Tyler,10_john_tyler.jpg
-11,1845-04-03,James K. Polk,11_james_k_polk.jpg
-12,1849-04-03,Zachary Taylor,12_zachary_taylor.jpg
-13,1850-09-07,Millard Fillmore,13_millard_fillmore.jpg
-14,1853-04-03,Franklin Pierce,14_franklin_pierce.jpg
-15,1857-04-03,James Buchanan,15_james_buchanan.jpg
-16,1861-04-03,Abraham Lincoln,16_abraham_lincoln.jpg
-17,1865-15-04,Andrew Johnson,17_andrew_johnson.jpg
-18,1869-04-03,Ulysses S. Grant,18_ulysses_s_grant.jpg
-19,1877-04-03,Rutherford B. Hayes,19_rutherford_b_hayes.jpg
-20,1881-04-03,James A. Garfield,20_james_a_garfield.jpg
-21,1881-19-09,Chester A. Arthur,21_chester_a_arthur.jpg
-22,1885-04-03,Grover Cleveland,22_grover_cleveland.jpg
-23,1889-04-03,Benjamin Harrison,23_benjamin_harrison.jpg
-24,1893-04-03,Grover Cleveland,22_grover_cleveland.jpg
-25,1897-04-03,William McKinley,25_william_mckinley.jpg
-26,1901-14-09,Theodore Roosevelt,26_theodore_roosevelt.jpg
-27,1909-04-03,William Howard Taft,27_william_howard_taft.jpg
-28,1913-04-03,Woodrow Wilson,28_woodrow_wilson.jpg
-29,1921-04-03,Warren G. Harding,29_warren_g_harding.jpg
-30,1923-02-08,Calvin Coolidge,30_calvin_coolidge.jpg
-31,1929-04-03,Herbert Hoover,31_herbert_hoover.jpg
-32,1933-04-03,Franklin D. Roosevelt,32_franklin_d_roosevelt.jpg
-33,1945-12-04,Harry S. Truman,33_harry_s_truman.jpg
-34,1953-20-01,Dwight D. Eisenhower,34_dwight_d_eisenhower.jpg
-35,1961-20-01,John F. Kennedy,35_john_f_kennedy.jpg
-36,1963-22-11,Lyndon B. Johnson,36_lyndon_b_johnson.jpg
-37,1969-20-01,Richard Nixon,37_richard_nixon.jpg
-38,1974-09-08,Gerald Ford,38_gerald_ford.jpg
-39,1977-20-01,Jimmy Carter,39_jimmy_carter.jpg
-40,1981-20-01,Ronald Reagan,40_ronald_reagan.jpg
-41,1989-20-01,George H. W. Bush,41_george_h_w_bush.jpg
-42,1993-20-01,Bill Clinton,42_bill_clinton.jpg
-43,2001-20-01,George W. Bush,43_george_w_bush.jpg
-44,2009-20-01,Barack Obama,44_barack_obama.jpg
-45,2017-20-01,Donald Trump,45_donald_trump.jpg
-46,2021-20-01,Joe Biden,46_joe_biden.jpg
-47,2025-20-01,Donald Trump,45_donald_trump.jpg
+11,1845-03-04,James K. Polk,11_james_k_polk.jpg
+12,1849-03-04,Zachary Taylor,12_zachary_taylor.jpg
+13,1850-07-09,Millard Fillmore,13_millard_fillmore.jpg
+14,1853-03-04,Franklin Pierce,14_franklin_pierce.jpg
+15,1857-03-04,James Buchanan,15_james_buchanan.jpg
+16,1861-03-04,Abraham Lincoln,16_abraham_lincoln.jpg
+17,1865-04-15,Andrew Johnson,17_andrew_johnson.jpg
+18,1869-03-04,Ulysses S. Grant,18_ulysses_s_grant.jpg
+19,1877-03-04,Rutherford B. Hayes,19_rutherford_b_hayes.jpg
+20,1881-03-04,James A. Garfield,20_james_a_garfield.jpg
+21,1881-09-19,Chester A. Arthur,21_chester_a_arthur.jpg
+22,1885-03-04,Grover Cleveland,22_grover_cleveland.jpg
+23,1889-03-04,Benjamin Harrison,23_benjamin_harrison.jpg
+24,1893-03-04,Grover Cleveland,22_grover_cleveland.jpg
+25,1897-03-04,William McKinley,25_william_mckinley.jpg
+26,1901-09-14,Theodore Roosevelt,26_theodore_roosevelt.jpg
+27,1909-03-04,William Howard Taft,27_william_howard_taft.jpg
+28,1913-03-04,Woodrow Wilson,28_woodrow_wilson.jpg
+29,1921-03-04,Warren G. Harding,29_warren_g_harding.jpg
+30,1923-08-02,Calvin Coolidge,30_calvin_coolidge.jpg
+31,1929-03-04,Herbert Hoover,31_herbert_hoover.jpg
+32,1933-03-04,Franklin D. Roosevelt,32_franklin_d_roosevelt.jpg
+33,1945-04-12,Harry S. Truman,33_harry_s_truman.jpg
+34,1953-01-20,Dwight D. Eisenhower,34_dwight_d_eisenhower.jpg
+35,1961-01-20,John F. Kennedy,35_john_f_kennedy.jpg
+36,1963-11-22,Lyndon B. Johnson,36_lyndon_b_johnson.jpg
+37,1969-01-20,Richard Nixon,37_richard_nixon.jpg
+38,1974-08-09,Gerald Ford,38_gerald_ford.jpg
+39,1977-01-20,Jimmy Carter,39_jimmy_carter.jpg
+40,1981-01-20,Ronald Reagan,40_ronald_reagan.jpg
+41,1989-01-20,George H. W. Bush,41_george_h_w_bush.jpg
+42,1993-01-20,Bill Clinton,42_bill_clinton.jpg
+43,2001-01-20,George W. Bush,43_george_w_bush.jpg
+44,2009-01-20,Barack Obama,44_barack_obama.jpg
+45,2017-01-20,Donald Trump,45_donald_trump.jpg
+46,2021-01-20,Joe Biden,46_joe_biden.jpg
+47,2025-01-20,Donald Trump,45_donald_trump.jpg
