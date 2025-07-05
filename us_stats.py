@@ -139,6 +139,9 @@ class CPIDelta:
 
     def __mul__(self, amt):
         return self.delta * amt
+
+    def __rmul__(self, amt):
+        return amt * self.delta
     
     @property
     def delta(self):
@@ -281,7 +284,24 @@ class StateAdmissions:
         self._states_admitted = states_admittied
     
     def __str__(self):
-        return f'State Admissions for the period: {self._states_admitted}'
+        return f'State Admissions for the period: {self.num_states}'
+
+    @property
+    def states_admitted(self):
+        return self._states_admitted
+    
+    @states_admitted.setter
+    def states_admitted(self, value):
+        self._states_admitted = value
+
+    @property
+    def num_states(self):
+        return len(self._states_admitted)
+    
+    @property
+    def last_state(self):
+        return self._states_admitted[-1]
+
 
 class USGDP:
     def __init__(self, us_gdp):
@@ -447,7 +467,7 @@ class President:
 
     def __str__(self):
         suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(self.number, 'th')
-        return f'{self.name} {self.number}{suffix} President'
+        return f'{self.name} the {self.number}{suffix} President'
     
     @property
     def image(self):
@@ -503,12 +523,20 @@ class PeriodDelta:
         self._first_date = date
 
     @property
+    def first_year(self):
+        return self.first_date.year
+
+    @property
     def second_date(self):
         return self._second_date
     
     @second_date.setter
     def second_date(self, date):
         self._second_date = date
+
+    @property
+    def second_year(self):
+        return self.second_date.year
 
     @property
     def cpi_delta(self):
@@ -658,7 +686,7 @@ class PeriodData:
 
     @state_admissions.setter
     def state_admissions(self, new_state_admissions):
-        self._state_admissions = new_state_admissions
+        self._state_admissions = StateAdmissions(new_state_admissions)
 
     @property
     def us_gdp(self):

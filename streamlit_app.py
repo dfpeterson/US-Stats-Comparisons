@@ -2,10 +2,10 @@ import streamlit as st
 import us_stats
 import datetime
 
-dash_title = 'The ChronoShuffle Times'
+dash_title = 'America at a Glance'
 st.set_page_config(layout="wide", page_title=dash_title)
 
-st.title(dash_title)
+#st.title(dash_title)
 
 st.markdown("""
     <style>
@@ -52,12 +52,14 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.markdown('<div class="section-header">Economic Review</div>', unsafe_allow_html=True)
     st.metric("Population", f"{engine.us_pop}")
-    st.metric("GDP", f"${engine.us_gdp}B")
-    st.metric("Adjusted $1", f"${100000*(comp.cpi_delta/100):.2f}")
-    st.metric("Adjusted $1", f"${100/comp.cpi_delta:.2f}")
+    st.metric("GDP", f"${engine.us_gdp}")
+    #st.metric("CPI", f"{engine.cpi}")
+    #st.metric("Adjusted CPI", f"{comp.cpi_delta.delta}")
+    st.metric(f"{comp.second_year} $100 comparable value in {comp.first_year}", f"${100*comp.cpi_delta:.2f}")
+    st.metric(f"{comp.first_year} $100 comparable value in {comp.second_year}", f"${100/comp.cpi_delta:.2f}")
 
 # Comparison
-    st.write(f"Population was {comp.us_pop_delta} of today")
+    st.write(f"{comp.us_pop_delta}")
     st.markdown('<div class="section-header">Constitutional Amendments</div>', unsafe_allow_html=True)
     amendments = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
                   "XI", "XII", "XIII", "XIV", "XV"]
@@ -66,16 +68,16 @@ with col1:
 
 # Column 2: Sidebar Info
 with col2:
-    st.markdown('<div class="section-header">At a Glance</div>', unsafe_allow_html=True)
-    st.metric("Population", "31.4M")
-    st.metric("GDP", "$1.5B")
-    st.metric("Value of $1 Today", "$32.74")
-
     st.markdown('<div class="section-header">Leader of the Nation</div>', unsafe_allow_html=True)
     st.image(f"images/presidents/{engine.president.image}", caption=f"{engine.president.name}")
     st.markdown(f"**{engine.president}**")
 
     st.markdown('<div class="section-header">National Flag</div>', unsafe_allow_html=True)
-    st.image("images/33star.jpg", caption="33-Star Flag")
+    st.image(f"images/flags/{engine.state_admissions.num_states}stars.png", caption=f"{engine.state_admissions}-Star Flag")
+    st.markdown(f"{engine.state_admissions}")
+
+    st.markdown(f'<div class="section-header">Map of the US on {engine.date}</div>', unsafe_allow_html=True)
 
 # Main stats
+
+#Sources
