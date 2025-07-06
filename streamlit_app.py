@@ -62,7 +62,7 @@ with col1:
     st.write(f"{comp.us_pop_delta}")
     st.markdown('<div class="section-header">Constitutional Amendments</div>', unsafe_allow_html=True)
     amendments = ['I-X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', '~XVIII~' if engine.amendments >= 21 else 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI', 'XXVII']
-    st.markdown(" ".join(f'**{a}**' if i + 10 <= engine.amendments else f'*{a}*' for i, a in enumerate(amendments)))
+    st.markdown(" ".join(f'**[{a}]({"https://www.archives.gov/founding-docs/amendments-11-27#" + a.lower().replace('~','') if i else "https://www.archives.gov/founding-docs/bill-of-rights-transcript"})**' if i + 10 <= engine.amendments else f'*[{a}]({"https://www.archives.gov/founding-docs/amendments-11-27#" + a.lower() if i else "https://www.archives.gov/founding-docs/bill-of-rights-transcript"})*' for i, a in enumerate(amendments)))
 
 # Column 2: Sidebar Info
 with col2:

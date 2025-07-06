@@ -27,18 +27,35 @@ class USAStats:
         self.recent_date = recent_date if recent_date else datef.today()
 
     def get_stats(self, date=''):
+        #! This is functional, but not correct for presidents, amendments and states
+        def safe_get(frame, date_field, date, return_field):
+            if isinstance(return_field, str):
+                return_value = frame[frame[date_field] <= date]
+                if len(return_value):
+                    return return_value.iloc[-1][return_field]
+                else:
+                    return frame.iloc[0][return_field]
+            elif isinstance(return_field, list):
+                return_value = frame[frame[date_field] <= date]
+                if len(return_value):
+                    return return_value[return_field].iloc[-1]
+                else:
+                    return frame.iloc[0][return_field]
+
+
         date = date if date else self.recent_datestr
         date = date.isoformat() if isinstance(date, datef) else date
-        return {'cpi': self.cpi_data.loc[self.cpi_data['Year and Month'] <= date].iloc[-1]['Adj CPI'],
-                'us_population': self.us_population[self.us_population['Census year'] <= int(date[:4])].iloc[-1]['Population'],
-                'world_population': self.world_population[self.world_population['year'] <= int(date[:4])].iloc[-1]['Population'],
+        year = int(date[:4])
+        return {'cpi': safe_get(self.cpi_data, 'Year and Month', date, 'Adj CPI'), #self.cpi_data.loc[self.cpi_data['Year and Month'] <= date].iloc[-1]['Adj CPI'],
+                'us_population': safe_get(self.us_population, 'Census year', year, 'Population'), # self.us_population[self.us_population['Census year'] <= int(date[:4])].iloc[-1]['Population'],
+                'world_population': safe_get(self.world_population, 'year', year, 'Population'), # self.world_population[self.world_population['year'] <= int(date[:4])].iloc[-1]['Population'],
                 'state_admissions': self.state_admissions.loc[self.state_admissions['Clean Date'] <= date],
                 #Tuples because it passes multiple values like both per capita and total
-                'us_gdp': tuple(self.us_gdp.loc[self.us_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
-                'world_gdp': tuple(self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
+                'us_gdp': tuple(safe_get(self.us_gdp, 'time', year, ['Income per person','GDP total'])), #self.us_gdp.loc[self.us_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
+                'world_gdp': tuple(safe_get(self.world_gdp, 'time', year, ['Income per person','GDP total'])), #self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
                 'presidents': tuple(self.presidents.loc[self.presidents['inauguration date'] <= date].iloc[-1]),
                 'flags': tuple(self.flags.loc[self.flags['date'] <= date].iloc[-1]),
-                'amendments': self.amendments.loc[self.amendments['date'] <= date].iloc[-1]['number'],
+                'amendments': safe_get(self.amendments, 'date', date, 'number'), #self.amendments.loc[self.amendments['date'] <= date].iloc[-1]['number'],
                 }
     
     @property
