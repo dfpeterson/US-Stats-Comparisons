@@ -53,8 +53,8 @@ class USAStats:
                 #Tuples because it passes multiple values like both per capita and total
                 'us_gdp': tuple(safe_get(self.us_gdp, 'time', year, ['Income per person','GDP total'])), #self.us_gdp.loc[self.us_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
                 'world_gdp': tuple(safe_get(self.world_gdp, 'time', year, ['Income per person','GDP total'])), #self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
-                'presidents': tuple(self.presidents.loc[self.presidents['inauguration date'] <= date].iloc[-1]),
-                'flags': tuple(self.flags.loc[self.flags['date'] <= date].iloc[-1]),
+                'presidents': tuple(safe_get(self.presidents, 'inauguration date', date, ['number','inauguration date','name','file'])),  #self.presidents.loc[self.presidents['inauguration date'] <= date].iloc[-1]),
+                'flags': tuple(safe_get(self.flags, 'date', date, ['date','number of stars','file name'])), #self.flags.loc[self.flags['date'] <= date].iloc[-1]),
                 'amendments': safe_get(self.amendments, 'date', date, 'number'), #self.amendments.loc[self.amendments['date'] <= date].iloc[-1]['number'],
                 }
     

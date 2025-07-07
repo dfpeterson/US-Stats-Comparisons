@@ -45,7 +45,7 @@ else:
     max_date = datetime.date(2025, 1, 1)
     disp_date = datetime.date(1776, 1, 1)+datetime.timedelta(days=random.randint(1, (max_date - min_date).days))
 
-    date = st.date_input("Pick a date", value=disp_date,
+    date = st.date_input("Pick a date", value=datetime.date(1841, 3, 5),
                         min_value=min_date,
                         max_value=max_date)
 st.markdown(f'<div class="headline">{dash_title} – {date}</div>', unsafe_allow_html=True)
