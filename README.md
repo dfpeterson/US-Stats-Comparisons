@@ -14,23 +14,27 @@ To Do:
 [ ] - US Flags  
     [x] - Add images  
     [x] - Add to state admissions as a 1st pass  
-    [ ] - Create a flags file (since flags are synched to 4th of July)  
-    [ ] - Create a flag class  
+    [x] - Create a flags file (since flags are synched to 4th of July)  
+    [x] - Create a flag class  
     [ ] - See if there is a realistic image alternative  
 [x] - US Presidents  
     [x] - Resize portraits
     [x] - Generate inaugurations csv
     [x] - Add class to us_stats
 [ ] - Historical events  
+    [ ] - The colonial, confederate and federal systems  
     [ ] - Constitutional Amendments  
     [ ] - Major inventions  
     [ ] - Wars  
+        [ ] - The Civil War period  
     [ ] - Tallest building  
+    [ ] - Slavery indicator  
+[ ] - Refactor code into multiple files  
 [ ] - Graphing integrations  
 [ ] - Add attributions  
 [ ] - Documentation  
 [ ] - Lint code  
 [ ] - Clean up cleaning scripts and move them to here  
     [ ] - Pull from web sources  
-    [ ] - Backfill from 1600  
-[ ] - Try polars  
+    [ ] - Backfill from 1600  (find sources for up to 1800)
+[ ] - Try polars or duckdb  

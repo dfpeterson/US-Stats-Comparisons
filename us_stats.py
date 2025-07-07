@@ -27,7 +27,7 @@ class USAStats:
         self.recent_date = recent_date if recent_date else datef.today()
 
     def get_stats(self, date=''):
-        #! This is functional, but not correct for presidents, amendments and states
+        #! This is functional, but not correct for presidents, amendments and states before 1800 or the constitutional convention
         def safe_get(frame, date_field, date, return_field):
             if isinstance(return_field, str):
                 return_value = frame[frame[date_field] <= date]
@@ -221,7 +221,7 @@ class USPopulation:
     
     @property
     def pretty(self):
-        return f'{self.us_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+        return f'{self.us_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude].title()}'
     
 class USPopulationDelta:
     def __init__(self, first_us_pop, second_us_pop):
@@ -278,7 +278,7 @@ class WorldPopulation:
     
     @property
     def pretty(self):
-        return f'{self.world_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+        return f'{self.world_pop/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude].title()}'
 
 class WorldPopulationDelta:
     def __init__(self, first_world_pop, second_world_pop):
@@ -468,11 +468,11 @@ class USGDP:
 
     @property
     def pretty(self):
-        return f'{self.us_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+        return f'{self.us_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude].title()}'
     
     @property
     def pretty_per_capita(self):
-        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita]}'
+        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita].title()}'
 
 class USGDPDelta:
     def __init__(self, first_us_gdp, second_us_gdp):
@@ -545,11 +545,11 @@ class WorldGDP:
 
     @property
     def pretty(self):
-        return f'{self.world_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude]}'
+        return f'{self.world_gdp/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude].title()}'
     
     @property
     def pretty_per_capita(self):
-        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita]}'
+        return f'{self.per_capita/(1000**self.magnitude_per_capita):,.1f} {MAGNITUDES[self.magnitude_per_capita].title()}'
     
 
 class WorldGDPDelta:

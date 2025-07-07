@@ -1,8 +1,10 @@
 import streamlit as st
 import us_stats
 import datetime
+import random
 
 dash_title = 'America at a Glance'
+VERSION = '0.0.1'
 st.set_page_config(layout="wide", page_title=dash_title)
 
 #st.title(dash_title)
@@ -36,10 +38,16 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+if 'date' in st.query_params:
+    date = datetime.datetime.strptime(st.query_params['date'], '%Y-%m-%d').date()
+else:
+    min_date = datetime.date(1776, 1, 1)
+    max_date = datetime.date(2025, 1, 1)
+    disp_date = datetime.date(1776, 1, 1)+datetime.timedelta(days=random.randint(1, (max_date - min_date).days))
 
-date = st.date_input("Pick a date", value=datetime.date(1860, 1, 1),
-                     min_value=datetime.date(1776, 1, 1),
-                     max_value=datetime.date(2025, 1, 1))
+    date = st.date_input("Pick a date", value=disp_date,
+                        min_value=min_date,
+                        max_value=max_date)
 st.markdown(f'<div class="headline">{dash_title} – {date}</div>', unsafe_allow_html=True)
 
 # Sidebar
@@ -51,12 +59,21 @@ col1, col2 = st.columns([2, 1])
 # Column 1: Chart or Data
 with col1:
     st.markdown('<div class="section-header">Economic Review</div>', unsafe_allow_html=True)
-    st.metric("Population", f"{engine.us_pop}")
-    st.metric("GDP", f"${engine.us_gdp}")
+    col1a, col1b = st.columns([1, 1])
+    with col1a:
+        st.markdown('<div class="section-header">US</div>', unsafe_allow_html=True)
+        st.metric("Population", f"{engine.us_pop.pretty}")
+        st.metric("GDP", f"${engine.us_gdp.pretty}")
+        st.metric("Per Capita GDP", f"${engine.us_gdp.pretty_per_capita}")
+    with col1b:
+        st.markdown('<div class="section-header">World</div>', unsafe_allow_html=True)
+        st.metric("Population", f"{engine.world_pop.pretty}")
+        st.metric("GDP", f"${engine.world_gdp.pretty}")
+        st.metric("Per Capita GDP", f"${engine.world_gdp.pretty_per_capita}")
     #st.metric("CPI", f"{engine.cpi}")
     #st.metric("Adjusted CPI", f"{comp.cpi_delta.delta}")
-    st.metric(f"{comp.second_year} $100 comparable value in {comp.first_year}", f"${100*comp.cpi_delta:.2f}")
-    st.metric(f"{comp.first_year} $100 comparable value in {comp.second_year}", f"${100/comp.cpi_delta:.2f}")
+    st.metric(f"$100 in {comp.second_year} comparable value in {comp.first_year}", f"${100*comp.cpi_delta:.2f}")
+    st.metric(f"$100 om {comp.first_year} comparable value in {comp.second_year}", f"${100/comp.cpi_delta:.2f}")
 
 # Comparison
     st.write(f"{comp.us_pop_delta}")
@@ -78,6 +95,8 @@ with col2:
     #st.image(f"images/maps/{engine.map}", use_column_width=True)
     st.markdown(f"{engine.state_admissions}")
 
+st.markdown(f"**Version:** {VERSION}")
+st.markdown("_Early demo — features and layout will evolve_")
 # Main stats
 
 #Sources
