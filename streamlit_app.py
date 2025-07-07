@@ -97,6 +97,7 @@ with col2:
 
 st.markdown(f"**Version:** {VERSION}")
 st.markdown("_Early demo — features and layout will evolve_")
+st.markdown("_Contact: [LinkedIn](https://www.linkedin.com/in/dfpeterson/) | [GitHub](https://github.com/dfpeterson/) | [E-mail](mailto:dfpeterson+stats@gmail.com)_")
 # Main stats
 
 #Sources
