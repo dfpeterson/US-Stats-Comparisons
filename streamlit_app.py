@@ -41,13 +41,11 @@ st.markdown("""
 if 'date' in st.query_params:
     date = datetime.datetime.strptime(st.query_params['date'], '%Y-%m-%d').date()
 else:
-    min_date = datetime.date(1776, 1, 1)
-    max_date = datetime.date(2025, 1, 1)
-    disp_date = datetime.date(1776, 1, 1)+datetime.timedelta(days=random.randint(1, (max_date - min_date).days))
-
-    date = st.date_input("Pick a date", value=datetime.date(1841, 3, 5),
-                        min_value=min_date,
-                        max_value=max_date)
+    with st.sidebar:
+        date = st.date_input("Pick a date", value=datetime.date(1841, 3, 5),
+                            #value=datetime.date(1776, 1, 1)+datetime.timedelta(days=random.randint(1, (datetime.date(2025, 1, 1) - datetime.date(1776, 1, 1)).days)),
+                            min_value=datetime.date(1776, 1, 1),
+                            max_value=datetime.date(2025, 1, 1))
 st.markdown(f'<div class="headline">{dash_title} – {date}</div>', unsafe_allow_html=True)
 
 # Sidebar
@@ -65,18 +63,19 @@ with col1:
         st.metric("Population", f"{engine.us_pop.pretty}")
         st.metric("GDP", f"${engine.us_gdp.pretty}")
         st.metric("Per Capita GDP", f"${engine.us_gdp.pretty_per_capita}")
+        st.write(f"{comp.us_pop_delta}")
     with col1b:
         st.markdown('<div class="section-header">World</div>', unsafe_allow_html=True)
         st.metric("Population", f"{engine.world_pop.pretty}")
         st.metric("GDP", f"${engine.world_gdp.pretty}")
         st.metric("Per Capita GDP", f"${engine.world_gdp.pretty_per_capita}")
+        st.write(f"{comp.world_pop_delta}")
     #st.metric("CPI", f"{engine.cpi}")
     #st.metric("Adjusted CPI", f"{comp.cpi_delta.delta}")
     st.metric(f"$100 in {comp.second_year} comparable value in {comp.first_year}", f"${100*comp.cpi_delta:.2f}")
     st.metric(f"$100 om {comp.first_year} comparable value in {comp.second_year}", f"${100/comp.cpi_delta:.2f}")
 
 # Comparison
-    st.write(f"{comp.us_pop_delta}")
     st.markdown('<div class="section-header">Constitutional Amendments</div>', unsafe_allow_html=True)
     amendments = ['I-X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', '~XVIII~' if engine.amendments >= 21 else 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI', 'XXVII']
     st.markdown(" ".join(f'**[{a}]({"https://www.archives.gov/founding-docs/amendments-11-27#" + a.lower().replace('~','') if i else "https://www.archives.gov/founding-docs/bill-of-rights-transcript"})**' if i + 10 <= engine.amendments else f'*[{a}]({"https://www.archives.gov/founding-docs/amendments-11-27#" + a.lower() if i else "https://www.archives.gov/founding-docs/bill-of-rights-transcript"})*' for i, a in enumerate(amendments)))

@@ -30,6 +30,10 @@ To Do:
     [ ] - Tallest building  
     [ ] - Slavery indicator  
 [ ] - Refactor code into multiple files  
+    [ ] - Split into files
+    [ ] - Create generic population/delta class
+    [ ] - Create generic GDP/delta class
+    [ ] - Regenerate data for generic classes
 [ ] - Graphing integrations  
 [ ] - Add attributions  
 [ ] - Documentation  
