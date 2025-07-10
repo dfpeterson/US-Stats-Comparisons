@@ -1,11 +1,10 @@
 import streamlit as st
-import us_stats
 import datetime
 #import random
 from stats_engine import period_data 
 
 dash_title = 'America at a Glance'
-VERSION = '0.0.1'
+VERSION = '0.0.1b'
 st.set_page_config(layout="wide", page_title=dash_title)
 
 #st.title(dash_title)

@@ -3,10 +3,9 @@ from stats_engine.helpers import MAGNITUDES
 
 #TODO: check for and remove "US"
 class Population:
-    def __init__(self, population, country, currency, pop_date):
+    def __init__(self, pop_date, population, country):
         self.population = population
         self.country = country
-        self.currency = currency
         self.pop_date = pop_date
     
     @property
@@ -24,14 +23,6 @@ class Population:
     @country.setter
     def country(self, value):
         self._country = value
-
-    @property
-    def currency(self):
-        return self._currency
-    
-    @currency.setter
-    def currency(self, value):
-        self._currency = value
 
     @property
     def pop_date(self):

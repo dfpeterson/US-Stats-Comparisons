@@ -28,12 +28,12 @@ To Do:
     [ ] - Wars  
         [ ] - The Civil War period  
     [ ] - Tallest building  
-    [ ] - Slavery indicator  
+    [ ] - End of slavery indicator  
 [ ] - Refactor code into multiple files  
-    [ ] - Split into files
-    [ ] - Create generic population/delta class
-    [ ] - Create generic GDP/delta class
-    [ ] - Regenerate data for generic classes
+    [x] - Split into files  
+    [ ] - Create generic population/delta class  
+    [ ] - Create generic GDP/delta class  
+    [ ] - Regenerate data for generic classes  
 [ ] - Graphing integrations  
 [ ] - Add attributions  
 [ ] - Documentation  
