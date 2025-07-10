@@ -1,3 +1,18 @@
+from dateutil.relativedelta import relativedelta
+from datetime import date
+from stats_engine.helpers import MAGNITUDES, parse_interval, _data_sets
+from stats_engine.stats.country.usa_stats import USAStats
+from stats_engine.stats.cpi import CPI, CPIDelta
+from stats_engine.stats.population import USPopulation, USPopulationDelta, WorldPopulation, WorldPopulationDelta
+from stats_engine.stats.gdp import USGDP, USGDPDelta, WorldGDP, WorldGDPDelta
+from stats_engine.stats.country.us.fct.us_const_amendments import Amendments
+from stats_engine.stats.country.us.fct.us_flags import Flag
+from stats_engine.stats.country.us.fct.us_presidents import President
+from stats_engine.stats.country.us.fct.us_state_admissions import StateAdmissions
+
+_usa_stats = USAStats(_data_sets)
+
+#TODO: Implement generic classes
 class PeriodDelta:
     def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop, first_us_gdp, second_us_gdp, first_world_gdp, second_world_gdp):
         self.first_date = first_date
@@ -16,11 +31,12 @@ class PeriodDelta:
         return self._first_date
     
     @first_date.setter
-    def first_date(self, date):
-        self._first_date = date
+    def first_date(self, first_date):
+        self._first_date = first_date
 
     @property
     def first_year(self):
+        
         return self.first_date.year
 
     @property
@@ -28,8 +44,8 @@ class PeriodDelta:
         return self._second_date
     
     @second_date.setter
-    def second_date(self, date):
-        self._second_date = date
+    def second_date(self, second_date):
+        self._second_date = second_date
 
     @property
     def second_year(self):
@@ -44,19 +60,9 @@ class PeriodDelta:
         return self._us_pop_delta
 
     @property
-    def us_pop_vis(self):
-        vis = (round(self.us_pop_delta.delta * 100) * ['']) + (round(((1-self.us_pop_delta.delta) * 100)) * ['⬜'])
-        return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
-
-    @property
     def world_pop_delta(self):
         return self._world_pop_delta
-    
-    @property
-    def world_pop_vis(self):
-        vis = (round(self.us_pop_delta.delta * 100) * ['👨‍👩‍👧‍👧']) + (round(((1-self.us_pop_delta.delta) * 100)) * ['⬜'])
-        return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
-    
+        
     @property
     def us_gdp_delta(self):
         return self._us_gdp_delta
@@ -65,22 +71,16 @@ class PeriodDelta:
     def world_gdp_delta(self):
         return self._world_gdp_delta
     
-    @property
-    def us_gdp_vis(self):
-        vis = (round(self.us_gdp_delta.delta * 100) * ['']) + (round(((1-self.us_gdp_delta.delta) * 100)) * ['⬜'])
-        return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
-    
-
 
 class PeriodData:
-    def __init__(self, date=''):
+    def __init__(self, period_date=''):
         #TODO: Refactor dates from string to datetime
-        if date:
-            date_stats = _usa_stats.get_stats(date)
-            self.date = date
+        if period_date:
+            date_stats = _usa_stats.get_stats(period_date)
+            self.period_date = period_date
         else:
             date_stats = _usa_stats.get_stats()
-            self.date = _usa_stats.recent_date
+            self.period_date = _usa_stats.recent_date
         self.cpi = date_stats['cpi']
         self.us_pop = date_stats['us_population']
         self.world_pop = date_stats['world_population']
@@ -99,7 +99,7 @@ class PeriodData:
         Calculates the PeriodDelta for the object compared to the current date
         """
         second_stats = _usa_stats.get_stats()
-        return PeriodDelta(self.date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'], self.us_gdp, second_stats['us_gdp'], self.world_gdp, second_stats['world_gdp'])
+        return PeriodDelta(self.period_date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'], self.us_gdp, second_stats['us_gdp'], self.world_gdp, second_stats['world_gdp'])
 
     def __sub__(self, compare_date):
         """
@@ -109,23 +109,23 @@ class PeriodData:
         If the object is a time delta it adjusts the object the new data
         """
         if isinstance(compare_date, PeriodData):
-            return PeriodDelta(self.date, compare_date.date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop, self.us_gdp, compare_date.us_gdp, self.world_gdp, compare_date.world_gdp)
+            return PeriodDelta(self.period_date, compare_date.period_date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop, self.us_gdp, compare_date.us_gdp, self.world_gdp, compare_date.world_gdp)
         elif isinstance(compare_date, relativedelta):
-            new_date =self.date - compare_date
+            new_date =self.period_date - compare_date
             return PeriodData(new_date)
         elif isinstance(compare_date, str):
             if len(compare_date.strip()) == 10 and compare_date[4] in ('-', '/'):
                 compare_stats = _usa_stats.get_stats(compare_date)
-                return PeriodDelta(self.date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'], self.us_gdp, compare_stats['us_gdp'], self.world_gdp, compare_stats['world_gdp'])
+                return PeriodDelta(self.period_date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'], self.us_gdp, compare_stats['us_gdp'], self.world_gdp, compare_stats['world_gdp'])
             else:
-                new_date = self.date - parse_interval(compare_date)
+                new_date = self.period_date - parse_interval(compare_date)
                 return PeriodData(new_date)
 
     def __add__(self, add_interval):
         """
         Advances the statistics by a given interval
         """
-        new_date = self.date + parse_interval(add_interval)
+        new_date = self.period_date + parse_interval(add_interval)
         return PeriodData(new_date)
 
     @property
@@ -137,19 +137,19 @@ class PeriodData:
         self._stats = stats
 
     @property
-    def date(self):
-        return self._date
+    def period_date(self):
+        return self._period_date
 
     @property
     def datestr(self):
         return f'{self._date::%Y-%m-%d}'
 
-    @date.setter
-    def date(self, new_date):
+    @period_date.setter
+    def period_date(self, new_date):
         if isinstance(new_date, str):
-            self._date = datef.fromisoformat(new_date)
+            self._period_date = date.fromisoformat(new_date)
         else:
-            self._date = new_date
+            self._period_date = new_date
 
     @property
     def cpi(self):

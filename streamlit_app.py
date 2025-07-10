@@ -1,7 +1,8 @@
 import streamlit as st
 import us_stats
 import datetime
-import random
+#import random
+from stats_engine import period_data 
 
 dash_title = 'America at a Glance'
 VERSION = '0.0.1'
@@ -49,7 +50,7 @@ else:
 st.markdown(f'<div class="headline">{dash_title} – {date}</div>', unsafe_allow_html=True)
 
 # Sidebar
-engine = us_stats.PeriodData(f'{date:%Y-%m-%d}')
+engine = period_data.PeriodData(f'{date:%Y-%m-%d}')
 comp = -engine
 
 col1, col2 = st.columns([2, 1])
@@ -90,7 +91,7 @@ with col2:
     st.image(f"images/flags/{engine.flag.image}", caption=f"{engine.flag}")
     st.markdown(f"{engine.flag}")
 
-    st.markdown(f'<div class="section-header">Map of the US on {engine.date}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="section-header">Map of the US on {engine.period_date}</div>', unsafe_allow_html=True)
     #st.image(f"images/maps/{engine.map}", use_column_width=True)
     st.markdown(f"{engine.state_admissions}")
 

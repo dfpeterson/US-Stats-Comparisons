@@ -6,6 +6,7 @@ class CPI:
         return f'CPI for the period: {self.cpi:,.2f}'
     
     def __truediv__(self, amt):
+        
         return self.cpi / amt
 
     @property
