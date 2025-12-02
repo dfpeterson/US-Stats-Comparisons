@@ -3,25 +3,26 @@ from datetime import date
 from stats_engine.helpers import MAGNITUDES, parse_interval, _data_sets
 from stats_engine.stats.country.usa_stats import USAStats
 from stats_engine.stats.cpi import CPI, CPIDelta
-from stats_engine.stats.population import USPopulation, USPopulationDelta, WorldPopulation, WorldPopulationDelta
-from stats_engine.stats.gdp import USGDP, USGDPDelta, WorldGDP, WorldGDPDelta
+from stats_engine.stats.population import Population, PopulationDelta
+from stats_engine.stats.gdp import GDP, GDPDelta
 from stats_engine.stats.country.us.fct.us_const_amendments import Amendments
 from stats_engine.stats.country.us.fct.us_flags import Flag
 from stats_engine.stats.country.us.fct.us_presidents import President
 from stats_engine.stats.country.us.fct.us_state_admissions import StateAdmissions
 
+#This is a cache of the stats so if I need to get comparisons I can do it without reloading the file
 _usa_stats = USAStats(_data_sets)
 
 #TODO: Implement generic classes
 class PeriodDelta:
-    def __init__(self, first_date, second_date, first_cpi, second_cpi, first_us_pop, second_us_pop, first_world_pop, second_world_pop, first_us_gdp, second_us_gdp, first_world_gdp, second_world_gdp):
-        self.first_date = first_date
-        self.second_date = second_date
-        self._cpi_delta = CPIDelta(first_cpi, second_cpi)
-        self._us_pop_delta = USPopulationDelta(first_us_pop, second_us_pop)
-        self._world_pop_delta = WorldPopulationDelta(first_world_pop, second_world_pop)
-        self._us_gdp_delta = USGDPDelta(first_us_gdp, second_us_gdp)
-        self._world_gdp_delta = WorldGDPDelta(first_world_gdp, second_world_gdp)
+    def __init__(self, first_period: dict, second_period: dict):
+        self.first_date = first_period['period_date']
+        self.second_date = second_period['period_date']
+        self.cpi_delta = CPIDelta(first_period['cpi'], second_period['cpi'])
+        self.us_pop_delta = PopulationDelta(first_period['us_pop'], second_period['us_pop'])
+        self.world_pop_delta = PopulationDelta(first_period['world_pop'], second_period['world_pop'])
+        self.us_gdp_delta = GDPDelta(first_period['us_gdp'], second_period['us_gdp'])
+        self.world_gdp_delta = GDPDelta(first_period['world_gdp'], second_period['world_gdp'])
 
     def __str__(self):
         return f'Period Delta from {self.first_date} to {self.second_date}:\n{str(self.cpi_delta)}\n{str(self.us_pop_delta)}\n{str(self.world_pop_delta)}\n{str(self.us_gdp_delta)}\n{str(self.world_gdp_delta)}'
@@ -36,7 +37,6 @@ class PeriodDelta:
 
     @property
     def first_year(self):
-        
         return self.first_date.year
 
     @property
@@ -55,22 +55,41 @@ class PeriodDelta:
     def cpi_delta(self):
         return self._cpi_delta
     
+    @cpi_delta.setter
+    def cpi_delta(self, value):
+        self._cpi_delta = value
+    
     @property
     def us_pop_delta(self):
         return self._us_pop_delta
+    
+    @us_pop_delta.setter
+    def us_pop_delta(self, value):
+        self._us_pop_delta = value
 
     @property
     def world_pop_delta(self):
         return self._world_pop_delta
+    
+    @world_pop_delta.setter
+    def world_pop_delta(self, value):
+        self._world_pop_delta = value
         
     @property
     def us_gdp_delta(self):
         return self._us_gdp_delta
-    
+
+    @us_gdp_delta.setter
+    def us_gdp_delta(self, value):
+        self._us_gdp_delta = value
+
     @property
     def world_gdp_delta(self):
         return self._world_gdp_delta
     
+    @world_gdp_delta.setter
+    def world_gdp_delta(self, value):
+        self._world_gdp_delta = value
 
 class PeriodData:
     def __init__(self, period_date=''):
@@ -98,8 +117,10 @@ class PeriodData:
         """
         Calculates the PeriodDelta for the object compared to the current date
         """
-        second_stats = _usa_stats.get_stats()
-        return PeriodDelta(self.period_date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'], self.us_gdp, second_stats['us_gdp'], self.world_gdp, second_stats['world_gdp'])
+        #TODO: Generate 2nd PeriodData object and convert to PeriodDelta pass-alongs
+        #second_stats = _usa_stats.get_stats()
+        return PeriodDelta(self.dict, PeriodData().dict)
+        #return PeriodDelta(self.period_date, self.recent_date, self.cpi, second_stats['cpi'], self.us_pop, second_stats['us_population'], self.world_pop, second_stats['world_population'], self.us_gdp, second_stats['us_gdp'], self.world_gdp, second_stats['world_gdp'])
 
     def __sub__(self, compare_date):
         """
@@ -109,14 +130,15 @@ class PeriodData:
         If the object is a time delta it adjusts the object the new data
         """
         if isinstance(compare_date, PeriodData):
-            return PeriodDelta(self.period_date, compare_date.period_date, self.cpi, compare_date.cpi, self.us_pop, compare_date.us_pop, self.world_pop, compare_date.world_pop, self.us_gdp, compare_date.us_gdp, self.world_gdp, compare_date.world_gdp)
+            return PeriodDelta(self.dict, compare_date.dict)
         elif isinstance(compare_date, relativedelta):
-            new_date =self.period_date - compare_date
+            new_date = self.period_date - compare_date
             return PeriodData(new_date)
         elif isinstance(compare_date, str):
             if len(compare_date.strip()) == 10 and compare_date[4] in ('-', '/'):
                 compare_stats = _usa_stats.get_stats(compare_date)
-                return PeriodDelta(self.period_date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'], self.us_gdp, compare_stats['us_gdp'], self.world_gdp, compare_stats['world_gdp'])
+                return PeriodDelta(self.dict, PeriodData(compare_date).dict)
+                #return PeriodDelta(self.period_date, compare_date, self.cpi, compare_stats['cpi'], self.us_pop, compare_stats['us_population'], self.world_pop, compare_stats['world_population'], self.us_gdp, compare_stats['us_gdp'], self.world_gdp, compare_stats['world_gdp'])
             else:
                 new_date = self.period_date - parse_interval(compare_date)
                 return PeriodData(new_date)
@@ -165,7 +187,7 @@ class PeriodData:
     
     @us_pop.setter
     def us_pop(self, new_us_pop):
-        self._us_population = USPopulation(new_us_pop)
+        self._us_population = Population(**new_us_pop)
     
     @property
     def world_pop(self):
@@ -173,7 +195,7 @@ class PeriodData:
     
     @world_pop.setter
     def world_pop(self, new_world_pop):
-        self._world_population = WorldPopulation(new_world_pop)
+        self._world_population = Population(**new_world_pop)
     
     @property
     def recent_date(self):
@@ -193,7 +215,7 @@ class PeriodData:
 
     @us_gdp.setter
     def us_gdp(self, new_us_gdp):
-        self._us_gdp = USGDP(new_us_gdp)
+        self._us_gdp = GDP(self.period_date, 'United States', new_us_gdp['GDP total'], new_us_gdp['Income per person'])
 
     @property
     def world_gdp(self):
@@ -201,7 +223,7 @@ class PeriodData:
 
     @world_gdp.setter
     def world_gdp(self, new_world_gdp):
-        self._world_gdp = WorldGDP(new_world_gdp)
+        self._world_gdp = GDP(self.period_date, 'World', new_world_gdp['GDP total'], new_world_gdp['Income per person'])
 
     @property
     def president(self):
@@ -226,3 +248,17 @@ class PeriodData:
     @amendments.setter
     def amendments(self, amendments):
         self._amendments = Amendments(amendments)
+
+    @property
+    def dict(self):
+        return {'period_date': self.period_date,
+            'cpi': self.cpi.cpi,
+            'us_pop': self.us_pop,
+            'world_pop': self.world_pop,
+            'state_admissions': self.state_admissions,
+            'us_gdp': self.us_gdp,
+            'world_gdp': self.world_gdp,
+            'president': self.president,
+            'flag': self.flag,
+            'amendments': self.amendments
+        }

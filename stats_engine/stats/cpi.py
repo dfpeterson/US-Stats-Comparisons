@@ -1,6 +1,6 @@
 class CPI:
     def __init__(self, cpi):
-        self.cpi = cpi
+        self.cpi = cpi['Adj CPI']
 
     def __str__(self):
         return f'CPI for the period: {self.cpi:,.2f}'

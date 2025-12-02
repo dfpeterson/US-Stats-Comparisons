@@ -1,9 +1,9 @@
 class President:
     def __init__(self, president):
-        self.name = president[2]
-        self.image = president[3]
-        self.number = president[0]
-        self.inauguration = president[1]
+        self.name = president['name']
+        self.image = president['file']
+        self.number = president['number']
+        self.inauguration = president['inauguration date']
 
     def __str__(self):
         suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(self.number, 'th')

@@ -1,7 +1,7 @@
 class Flag:
     def __init__(self, flag):
-        self.stars = flag[1]
-        self.image = flag[2]
+        self.stars = flag['number of stars']
+        self.image = flag['file name']
 
     def __str__(self):
         return f'{self.stars}-Star Flag'

@@ -19,6 +19,7 @@ def parse_interval(interval):
 
 _data_sets = {'cpi_data': 'combined_cpi.csv',
               'state_admissions': 'state_admissions.csv',
+              'populations': 'populations.csv',
               'us_population': 'us_population_by_year.csv',
               'world_population': 'world_population.csv',
               'us_gdp': 'us_gdp.csv',

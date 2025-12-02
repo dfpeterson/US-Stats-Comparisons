@@ -1,6 +1,6 @@
 class Amendments:
     def __init__(self, amendments):
-        self.amendments = amendments
+        self.amendments = amendments['number']
 
     def __str__(self):
         return f'{self.amendments}'

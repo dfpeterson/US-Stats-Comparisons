@@ -61,19 +61,19 @@ with col1:
     with col1a:
         st.markdown('<div class="section-header">US</div>', unsafe_allow_html=True)
         st.metric("Population", f"{engine.us_pop.pretty}")
-        st.metric("GDP", f"${engine.us_gdp.pretty}")
-        st.metric("Per Capita GDP", f"${engine.us_gdp.pretty_per_capita}")
+        st.metric("GDP", f"{engine.us_gdp.pretty}")
+        st.metric("Per Capita GDP", f"{engine.us_gdp.pretty_per_capita}")
         st.write(f"{comp.us_pop_delta}")
     with col1b:
         st.markdown('<div class="section-header">World</div>', unsafe_allow_html=True)
         st.metric("Population", f"{engine.world_pop.pretty}")
-        st.metric("GDP", f"${engine.world_gdp.pretty}")
-        st.metric("Per Capita GDP", f"${engine.world_gdp.pretty_per_capita}")
+        st.metric("GDP", f"{engine.world_gdp.pretty}")
+        st.metric("Per Capita GDP", f"{engine.world_gdp.pretty_per_capita}")
         st.write(f"{comp.world_pop_delta}")
     #st.metric("CPI", f"{engine.cpi}")
     #st.metric("Adjusted CPI", f"{comp.cpi_delta.delta}")
-    st.metric(f"$100 in {comp.second_year} comparable value in {comp.first_year}", f"${100*comp.cpi_delta:.2f}")
-    st.metric(f"$100 om {comp.first_year} comparable value in {comp.second_year}", f"${100/comp.cpi_delta:.2f}")
+    st.metric(f"$100 in {comp.second_year} comparable value in {comp.first_year}", f"${100*comp.cpi_delta:,.2f}")
+    st.metric(f"$100 in {comp.first_year} comparable value in {comp.second_year}", f"${100/comp.cpi_delta:,.2f}")
 
 # Comparison
     st.markdown('<div class="section-header">Constitutional Amendments</div>', unsafe_allow_html=True)
