@@ -30,3 +30,7 @@ class Amendments:
     
     def __le__(self, value):
         return self.amendments <= value
+
+    @property
+    def as_numeral(self):
+        return ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII', 'XXIV', 'XXV', 'XXVI', 'XXVII'][self.amendments - 1]

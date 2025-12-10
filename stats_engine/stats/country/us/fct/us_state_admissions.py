@@ -19,4 +19,4 @@ class StateAdmissions:
     
     @property
     def last_state(self):
-        return self._states_admitted[-1]
+        return self._states_admitted.iloc[-1].to_dict()

@@ -662,7 +662,6 @@ class PeriodDelta:
         return '\n'.join([''.join(vis[row:row+24]) for row in range(0, len(vis), 25)])
     
 
-
 class PeriodData:
     def __init__(self, date=''):
         #TODO: Refactor dates from string to datetime

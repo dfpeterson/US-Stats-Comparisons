@@ -1,25 +1,29 @@
 class CPI:
-    def __init__(self, cpi):
+    def __init__(self, cpi, currency='USD', currency_symbol='$', is_currency_preceding=True):
         self.cpi = cpi['Adj CPI']
+        self.currency = currency
+        self.currency_symbol = currency_symbol
+        self.is_currency_preceding = is_currency_preceding
 
     def __str__(self):
         return f'CPI for the period: {self.cpi:,.2f}'
     
     def __truediv__(self, amt):
-        
         return self.cpi / amt
 
     @property
     def cpi(self):
         return self._cpi
     
+    #TODO: pretty format with div and currency
     @cpi.setter
     def cpi(self, value):
         self._cpi = value
     
 class CPIDelta:
-    def __init__(self, first_cpi, second_cpi):
+    def __init__(self, first_cpi, second_cpi, baseline=100):
         self.delta = (first_cpi, second_cpi)
+        self.baseline = baseline
     
     def __str__(self):
         return f'CPI Delta for the period: {self.delta:,.2f}'

@@ -12,10 +12,13 @@
 - [ ] Refactor code into multiple files  
   - [x] Split into files  
   - [x] Create generic population/delta class  
-  - [ ] Create generic GDP/delta class  
+  - [x] Create generic GDP/delta class  
   - [ ] Regenerate data for generic classes  
 - [ ] Lint code  
+  - [ ] Replace markdown with proper functions  
+  - [ ] Consistent quote use  
   - [ ] Add typing  
+  - [ ] Docstrings (with data formats)  
 - [ ] Try polars or duckdb  
 
 ### Data sets and handlers
@@ -37,11 +40,11 @@
 
 - [x] US and World GDP  
   - [x] Add to deltas  
-- [ ] Add a currency symbol and placement (with defaults)  
+- [x] Add a currency symbol and placement (with defaults)  
 
 ### Inflation and Price Levels
 
-- [ ] Add inflation data  
+- [x] Add inflation data  
   - [ ] Add a currency symbol and placement (with defaults)
   - [ ] Baseline dollar amount in currency of choice
 
@@ -65,6 +68,7 @@
   - [x] Generate inaugurations csv
   - [x] Add class to us_stats
   - [ ] The President's party
+  - [ ] x days into y term
 - [ ] The Vice Presidents
   - [ ] The Vice Presidents' party
 
@@ -107,7 +111,7 @@
 
 - [ ] Major inventions  
 - [ ] Wars  
-  - [ ] The Revolutionary War
+  - [ ] The Revolutionary War  
   - [ ] The Civil War period  
 - [ ] Tallest building tracker  
 - [ ] End of slavery indicator  
@@ -118,8 +122,8 @@
 
 ## Geography & Environment
 
-- [ ] Number of States  
-  - [ ] Last state to join the union
+- [x] Number of States  
+  - [x] Last state to join the union
 - [ ] Map integrations  
 - [ ] Territorial expansion timeline  
 - [ ] State boundary evolution  

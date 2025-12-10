@@ -1,11 +1,12 @@
 from math import floor, log
-from stats_engine.helpers import MAGNITUDES
+from stats_engine.helpers import MAGNITUDES, COUNTRY_CODES
+from datetime import datetime
 
-#TODO: check for and remove "US"
 class Population:
     def __init__(self, pop_date, population, country):
         self.population = population
-        self.country = country
+        self.country_name = country
+        self.country_code = country
         self.pop_date = pop_date
     
     @property
@@ -17,12 +18,20 @@ class Population:
         self._population = value
 
     @property
-    def country(self):
-        return self._country
+    def country_name(self):
+        return self._country_name
     
-    @country.setter
-    def country(self, value):
-        self._country = value
+    @country_name.setter
+    def country_name(self, value):
+        self._country_name = COUNTRY_CODES.get(value, 'Unknown')
+
+    @property
+    def country_code(self):
+        return self._country_code
+    
+    @country_code.setter
+    def country_code(self, value):
+        self._country_code = value
 
     @property
     def pop_date(self):
@@ -44,12 +53,12 @@ class PopulationDelta:
     def __init__(self, first_pop, second_pop):
         self.first_pop = first_pop.population
         self.second_pop = second_pop.population
-        self.country = first_pop.country
+        self.country_name = first_pop.country_name
         self.first_date = first_pop.pop_date
         self.second_date = second_pop.pop_date
 
     def __str__(self):
-        return f'{self.country} Population Delta for the period: {self.delta:.1%}'
+        return f'{self.delta:.1%} of the {self.country_name} population compared to {datetime.strptime(self.second_date, "%Y-%m-%d"):%B %Y}'
 
     @property
     def first_pop(self):
@@ -72,12 +81,20 @@ class PopulationDelta:
         return self.first_pop / self.second_pop
 
     @property
-    def country(self):
-        return self._country
+    def country_name(self):
+        return self._country_name
     
-    @country.setter
-    def country(self, value):
-        self._country = value
+    @country_name.setter
+    def country_name(self, value):
+        self._country_name = value
+
+    @property
+    def country_code(self):
+        return self._country_code
+    
+    @country_code.setter
+    def country_code(self, value):
+        self._country_code = value
 
     @property
     def currency(self):

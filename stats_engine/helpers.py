@@ -4,6 +4,8 @@ MAGNITUDES = ['units', 'thousand', 'million', 'billion', 'trillion',
               'quadrillion', 'quintillion', 'sextillion', 'septillion',
               'octillion', 'nonillion', 'decillion']
 
+COUNTRY_CODES = {'wld': 'World', 'usa': 'United States'}
+
 #TODO: Organize by comparative classes and factual classes
 
 def parse_interval(interval):
