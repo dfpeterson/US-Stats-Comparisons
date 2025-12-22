@@ -171,10 +171,10 @@ with col1:
     st.html('<div class="section-header">Demographic State of the Union</div>')
     col1a, col1b = st.columns([1, 1])
     with col1a:
-        st.metric('Population', f'{engine.us_pop.pretty}', delta=f'{comp.us_pop_delta.delta:.1%}', delta_color='off')#, delta_arrow='off')
+        st.metric('Population', f'{engine.us_pop.pretty}', delta=f'{comp.us_pop_delta.delta:.1%}', delta_color='off', delta_arrow='off')
         st.write(f'{comp.us_pop_delta}')
     with col1b:
-        st.metric('Population', f'{engine.world_pop.pretty}', delta=f'{comp.world_pop_delta.delta:.1%}', delta_color='off')#, delta_arrow='off')
+        st.metric('Population', f'{engine.world_pop.pretty}', delta=f'{comp.world_pop_delta.delta:.1%}', delta_color='off', delta_arrow='off')
         st.write(f'{comp.world_pop_delta}')
 
 
@@ -188,13 +188,14 @@ with col2:
     st.html('<div class="section-header">State of the Government</div>')
     st.html('<div class="section-header">The Executive Branch</div>')
     st.html(f'<strong>{engine.president.name}</strong>')
-    st.html(f'<img src="images/parties/{engine.president.party.lower()}.jpg> {engine.president.party.title()}')
+    st.html(f'<img src="images/parties/{engine.president.party.lower()}.jpg"> {engine.president.party.title()}')
     st.html(f'{engine.president.calc_days(date)}')
     st.image(f'images/presidents/{engine.president.image}', caption=f'{engine.president}')
 
     st.html('<div class="section-header">The Legislative Branch</div>')
 
     st.html('<div class="section-header">The Judicial Branch</div>')
+    st.write(engine.supreme_court)
 
     st.html('<div class="section-header">The State of the States</div>')
     st.image(f'images/flags/{engine.flag.image}', caption=f'{engine.flag}')
@@ -208,6 +209,5 @@ with col2:
 st.html(f"<strong>Version:<strong> {VERSION}")
 st.html('<em>Early demo — features and layout will evolve</em>')
 st.markdown('_Contact: [LinkedIn](https://www.linkedin.com/in/dfpeterson/) | [GitHub](https://github.com/dfpeterson/) | [E-mail](mailto:dfpeterson+stats@gmail.com)_')
-# Main stats
 
 #Sources

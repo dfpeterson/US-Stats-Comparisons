@@ -8,6 +8,8 @@ from stats_engine.stats.gdp import GDP, GDPDelta
 from stats_engine.stats.country.us.fct.us_const_amendments import Amendments
 from stats_engine.stats.country.us.fct.us_flags import Flag
 from stats_engine.stats.country.us.fct.us_presidents import President
+from stats_engine.stats.country.us.fct.us_congress import House, Senate
+from stats_engine.stats.country.us.fct.us_supreme_court import SupremeCourt
 from stats_engine.stats.country.us.fct.us_state_admissions import StateAdmissions
 
 #This is a cache of the stats so if I need to get comparisons I can do it without reloading the file
@@ -107,6 +109,7 @@ class PeriodData:
         self.us_gdp = date_stats['us_gdp']
         self.world_gdp = date_stats['world_gdp']
         self.president = date_stats['presidents']
+        self.supreme_court = date_stats['supreme_court']
         self.flag = date_stats['flags']
         self.amendments = date_stats['amendments']
     
@@ -234,6 +237,15 @@ class PeriodData:
         self._president = President(president)
 
     @property
+    def supreme_court(self):
+        return self._supreme_court
+    
+    @supreme_court.setter
+    def supreme_court(self, justices):
+        self._supreme_court = justices
+        #self._supreme_court = SupremeCourt(justices)
+
+    @property
     def flag(self):
         return self._flag
     
@@ -259,6 +271,7 @@ class PeriodData:
             'us_gdp': self.us_gdp,
             'world_gdp': self.world_gdp,
             'president': self.president,
+            'supreme_court': self.supreme_court,
             'flag': self.flag,
             'amendments': self.amendments
         }

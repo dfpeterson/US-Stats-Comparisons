@@ -10,15 +10,20 @@ class USAStats:
     def get_stats(self, stats_date=''):
         #! This is functional, but not correct for presidents, amendments and
         #! states before 1800 or the constitutional convention
-        def safe_get(frame, date_field, get_date, filter_cols=None):
+        #* This should probably be in helpers
+        def safe_get(frame, date_field, get_date, end_date=None, filter_cols=None, get_range=False): #end date, get range
             if filter_cols is None:
                 filter_cols = {}
             #TODO: Add a flag for if this was triggered
             if frame[date_field].min() > get_date:
                 get_date = frame[date_field].min()
             mask = frame[date_field] <= get_date
+            if end_date:
+                mask &= frame[end_date] >= get_date
             for field, val in filter_cols.items():
                 mask &= frame[field] == val
+            if get_range:
+                return frame[mask]
             return frame[mask].iloc[-1].to_dict()
 
 
@@ -33,7 +38,8 @@ class USAStats:
                 'us_gdp': safe_get(self.us_gdp, 'time', stats_year), #self.us_gdp.loc[self.us_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
                 'world_gdp': safe_get(self.world_gdp, 'time', stats_year), #self.world_gdp.loc[self.world_gdp['time']<=int(date[:4])][['Income per person','GDP total']].iloc[-1]),
                 'presidents': safe_get(self.presidents, 'inauguration date', stats_date),  #self.presidents.loc[self.presidents['inauguration date'] <= date].iloc[-1]),
-                'flags': safe_get(self.flags, 'date', stats_date), #self.flags.loc[self.flags['date'] <= date].iloc[-1]),
+                'supreme_court': safe_get(self.supreme_court, 'oath_date', stats_date, end_date='term_end_date', get_range=True),
+                'flags': safe_get(self.flags, 'date', stats_date), #self.flags.loc[self.flags['date'] <= date],.iloc[-1]),
                 'amendments': safe_get(self.amendments, 'date', stats_date), #self.amendments.loc[self.amendments['date'] <= date].iloc[-1]['number'],
                 }
     
@@ -98,3 +104,7 @@ class USAStats:
     @property
     def amendments(self):
         return self.payload['amendments']
+    
+    @property
+    def supreme_court(self):
+        return self.payload['supreme_court']

@@ -81,6 +81,9 @@
 ### Judicial Branch
 
 - [ ] Justices  
+  - [ ] Pull the data
+  - [ ] Format it to calculate elevated justices
+  - [ ] Create handlers to pull those who were serving at the time
   - [ ] Who appointed each justice  
   - [ ] How long they had been serving at the time  
 - [ ] Major Supreme Court rulings  
