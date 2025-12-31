@@ -1,6 +1,6 @@
 from dateutil.relativedelta import relativedelta
 from datetime import date
-from stats_engine.helpers import MAGNITUDES, parse_interval, _data_sets
+from stats_engine.helpers import parse_interval, _data_sets
 from stats_engine.stats.country.usa_stats import USAStats
 from stats_engine.stats.cpi import CPI, CPIDelta
 from stats_engine.stats.population import Population, PopulationDelta
@@ -167,7 +167,11 @@ class PeriodData:
 
     @property
     def datestr(self):
-        return f'{self._date::%Y-%m-%d}'
+        return f'{self._period_date:%Y-%m-%d}'
+    
+    @property
+    def pretty_date(self):
+        return f'{self._period_date:%B %d, %Y}'
 
     @period_date.setter
     def period_date(self, new_date):
@@ -242,8 +246,8 @@ class PeriodData:
     
     @supreme_court.setter
     def supreme_court(self, justices):
-        self._supreme_court = justices
-        #self._supreme_court = SupremeCourt(justices)
+        #self._supreme_court = justices
+        self._supreme_court = SupremeCourt(justices, self.period_date)
 
     @property
     def flag(self):

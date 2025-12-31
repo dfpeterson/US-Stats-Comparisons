@@ -1,5 +1,5 @@
 from math import floor, log
-from stats_engine.helpers import MAGNITUDES
+from stats_engine.helpers import magnitude
 
 class GDP:
     def __init__(self, gdp_date, country, total_gdp, per_capita_gdp,
@@ -68,11 +68,11 @@ class GDP:
 
     @property
     def pretty(self):
-        return f'{self.currency_symbol if self.is_currency_preceding else ""}{self.total_gdp/(1000**self.magnitude):,.1f}{self.currency_symbol if not self.is_currency_preceding else ""} {MAGNITUDES[self.magnitude].title()}'
+        return f'{self.currency_symbol if self.is_currency_preceding else ""}{self.total_gdp/(1000**self.magnitude):,.1f}{self.currency_symbol if not self.is_currency_preceding else ""} {magnitude(self.total_gdp).title()}'
     
     @property
     def pretty_per_capita(self):
-        return f'{self.currency_symbol if self.is_currency_preceding else ""}{self.per_capita_gdp/(1000**self.magnitude_per_capita):,.1f}{self.currency_symbol if not self.is_currency_preceding else ""} {MAGNITUDES[self.magnitude_per_capita].title()}'
+        return f'{self.currency_symbol if self.is_currency_preceding else ""}{self.per_capita_gdp/(1000**self.magnitude_per_capita):,.1f}{self.currency_symbol if not self.is_currency_preceding else ""} {magnitude(self.per_capita_gdp).title()}'
 
 class GDPDelta:
     def __init__(self, first_gdp, second_gdp):

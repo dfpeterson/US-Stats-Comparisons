@@ -9,7 +9,7 @@ class President:
         self.party = 'None'
 
     def __str__(self):
-        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(self.number, 'th')
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(self.number%10, 'th')
         return f'{self.name} the {self.number}{suffix} President'
     
     @property
@@ -63,14 +63,13 @@ class President:
     @property
     def term_start(self):
         return self._term_start
-    
 
     @term_start.setter
     def term_start(self, value):
         self._term_start = value
 
     def calc_days(self, calc_date):
-        if calc_date and self.term_start and self.term:
+        if calc_date and self.term_start and self.term_number:
             return f'{calc_date - self.term_start} days into his {self.term_number}{["st", "nd", "rd", "th"][self.term_number - 1]} term'
         else:
             return f'{self.term_number} term calc in progress'

@@ -1,5 +1,5 @@
 from math import floor, log
-from stats_engine.helpers import MAGNITUDES, COUNTRY_CODES
+from stats_engine.helpers import magnitude, code_to_name
 from datetime import datetime
 
 class Population:
@@ -23,7 +23,7 @@ class Population:
     
     @country_name.setter
     def country_name(self, value):
-        self._country_name = COUNTRY_CODES.get(value, 'Unknown')
+        self._country_name = code_to_name(value)
 
     @property
     def country_code(self):
@@ -40,14 +40,14 @@ class Population:
     @pop_date.setter
     def pop_date(self, value):
         self._pop_date = value
-
+    
     @property
     def magnitude(self):
-        return floor(log(self._population,1000))
+        return floor(log(self._population, 1000))
     
     @property
     def pretty(self):
-        return f'{self.population/(1000**self.magnitude):,.1f} {MAGNITUDES[self.magnitude].title()}'
+        return f'{self.population/(1000**self.magnitude):,.1f} {magnitude(self._population).title()}'
     
 class PopulationDelta:
     def __init__(self, first_pop, second_pop):

@@ -14,6 +14,7 @@
   - [x] Create generic population/delta class  
   - [x] Create generic GDP/delta class  
   - [ ] Regenerate data for generic classes  
+  - [ ] Delete old handler  
 - [ ] Lint code  
   - [ ] Replace markdown with proper functions  
   - [ ] Consistent quote use  
@@ -24,11 +25,13 @@
 ### Data sets and handlers
 
 - [ ] Clean up preprocessing scripts  
+  - [ ] Break out into multiple notebook files  
   - [ ] Move them into repository  
   - [ ] Add web data pulling capability  
   - [ ] Backfill historical data (1600–1800)  
 - [ ] Consolidate shared utilities (parsing, date alignment, sources)  
 - [ ] "No Data" handlers and ability to turn on/off dashboard features when there is no data  
+- [ ] Add .html properties  
 
 ---
 
@@ -64,13 +67,13 @@
 ### Executive Branch
 
 - [x] US Presidents  
-  - [x] Resize portraits
-  - [x] Generate inaugurations csv
-  - [x] Add class to us_stats
-  - [ ] The President's party
-  - [ ] x days into y term
+  - [x] Resize portraits  
+  - [x] Generate inaugurations csv  
+  - [x] Add class to us_stats  
+  - [ ] The President's party  
+  - [ ] x days into y term  
 - [ ] The Vice Presidents
-  - [ ] The Vice Presidents' party
+  - [ ] The Vice Presidents' party  
 
 ### Legislative Branch
 
@@ -81,17 +84,20 @@
 ### Judicial Branch
 
 - [ ] Justices  
-  - [ ] Pull the data
+  - [x] Pull the data
+  - [x] Create handlers to pull those who were serving at the time
+  - [x] Who appointed each justice  
+  - [x] How long they had been serving at the time  
   - [ ] Format it to calculate elevated justices
-  - [ ] Create handlers to pull those who were serving at the time
-  - [ ] Who appointed each justice  
-  - [ ] How long they had been serving at the time  
+  - [ ] Add a vacancy handler  
+  - [ ] Add active seat tracker  
 - [ ] Major Supreme Court rulings  
 
 ### Constitutional Development
 
 - [x] Constitutional Amendments  
   - [ ] A visual representation of the constitutional amendments  
+  - [ ] Clean up the data and add bill of rights adoption dates
 
 ### Government Eras
 
@@ -120,6 +126,7 @@
 - [ ] End of slavery indicator  
 - [ ] The alcohol prohibition period  
 - [ ] Who can vote tracker  
+- [ ] Types of communications (telegraph, telephone, pony express, etc.)  
 
 ---
 
